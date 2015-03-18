@@ -76,13 +76,9 @@ spotkeys = [
         'latitude': -122.3942683
     }]
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def hi():
     return 'vielkom and bienvenue.'
-
-@app.route('/favicon.ico', methods=['GET'])
-def favorite():
-    return 'hi'
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
