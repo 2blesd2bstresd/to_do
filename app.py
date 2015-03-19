@@ -103,11 +103,12 @@ def hi():
 
 @app.route('/add_user/<string:first_name>', methods=['POST'])
 def add_user(name):
-    console.log(request)
+    print 'get this party started'
+    print 'REQUEST: ', request
     try:
         conn, c = get_conn_cursor()
     except:
-        console.log('nooooope')
+        print 'couldnt get conn or cursor'
         return 'failure'
     c.execute('INSERT INTO Users (first_name) VALUES (%s)' % first_name)
     conn.commit()
