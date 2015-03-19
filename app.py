@@ -105,9 +105,6 @@ def hi():
 def add_user(name):
     print 'get this party started'
     conn, c = get_conn_cursor()
-    except:
-        print 'couldnt get conn or cursor'
-        return 'failure'
     c.execute('INSERT INTO Users (first_name) VALUES (%s)' % first_name)
     conn.commit()
     return 'success!'
