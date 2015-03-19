@@ -10,6 +10,9 @@ urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 def get_conn_cursor():
+
+    print "URL: ", url
+
     conn = psycopg2.connect(
         database=url.path[1:],
         user=url.username,
@@ -111,8 +114,7 @@ def add_user(name):
     print "IS IT CLOSED: ", conn.closed
     print "CURSOR: ", dir(c)
     try:
-        c.execute('INSERT INTO Users VALUES (1, ?, ?, ?, ?, ?, ?)', [datetime.now(),'max','howard','url','username','password'])
-    except:
+        c.execute('INSERT INTO Users (first_name) VALUES (%s)' % name)
         return 'insert failed'
     return 'success!'
 
