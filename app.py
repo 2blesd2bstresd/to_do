@@ -115,6 +115,7 @@ def add_user(name):
     print "CURSOR: ", dir(c)
     try:
         c.execute('INSERT INTO Users (first_name) VALUES (%s)' % name)
+    except:
         return 'insert failed'
     return 'success!'
 
