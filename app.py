@@ -98,14 +98,12 @@ spotkeys = [
 
 @app.route('/')
 def hi():
-    print 'HELLLLLLLLLO'
+    print 'HERES THE REQUEST: ', request
     return 'vielkom and bienvenue.'
 
 @app.route('/add_user/<string:first_name>', methods=['POST'])
 def add_user(name):
     print 'get this party started'
-    print 'REQUEST: ', request
-    try:
         conn, c = get_conn_cursor()
     except:
         print 'couldnt get conn or cursor'
