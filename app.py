@@ -101,7 +101,7 @@ def hi():
     print 'HERES THE REQUEST: ', request.headers
     return 'vielkom and bienvenue.'
 
-@app.route('/add_user', methods=['POST'])
+@app.route('/add_user', methods=['GET'])
 def add_user(name):
     print 'get this party started'
     try:
