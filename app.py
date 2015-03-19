@@ -104,13 +104,14 @@ def hi():
 @app.route('/add_user', methods=['GET'])
 def add_user(name):
     print 'get this party started'
-    try:
-        conn, c = get_conn_cursor()
-        c.execute('INSERT INTO Users (first_name) VALUES (%s)' % first_name)
-        conn.commit()
-        return 'success!'
-    except:
-        return 'no soup for you'
+    # try:
+    #     conn, c = get_conn_cursor()
+    #     c.execute('INSERT INTO Users (first_name) VALUES (%s)' % first_name)
+    #     conn.commit()
+    #     return 'success!'
+    # except:
+    #     return 'no soup for you'
+    return 'not cool'
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
