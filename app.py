@@ -107,7 +107,7 @@ def hi():
 def add_user(name):
     print 'get this party started'
     conn, c = get_conn_cursor()
-    print "CONNECTION: ", conn
+    print "CONNECTION: ", dir(conn)
     print "CURSOR: ", c
     try:
         c.execute('INSERT INTO Users VALUES (1, ?, ?, ?, ?, ?, ?)', [datetime.now(),'max','howard','url','username','password'])
