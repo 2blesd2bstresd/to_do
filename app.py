@@ -109,8 +109,10 @@ def add_user(name):
     conn, c = get_conn_cursor()
     print "CONNECTION: ", conn
     print "CURSOR: ", c
-    
-    c.execute('INSERT INTO Users VALUES (1, ?, ?, ?, ?, ?, ?)', [datetime.now(),'max','howard','url','username','password'])
+    try:
+        c.execute('INSERT INTO Users VALUES (1, ?, ?, ?, ?, ?, ?)', [datetime.now(),'max','howard','url','username','password'])
+    except:
+        return 'insert failed'
     return 'success!'
 
 @app.route('/user/<int:user_id>', methods=['GET'])
