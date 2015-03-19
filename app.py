@@ -101,9 +101,14 @@ def hi():
     console.log(request)
     return 'vielkom and bienvenue.'
 
-@app.route('/add_user?name=<string:first_name>', methods=['POST'])
+@app.route('/add_user/<string:first_name>', methods=['POST'])
 def add_user(name):
-    conn, c = get_conn_cursor()
+    console.log(request)
+    try:
+        conn, c = get_conn_cursor()
+    except:
+        console.log('nooooope')
+        return 'failure'
     c.execute('INSERT INTO Users (first_name) VALUES (%s)' % first_name)
     conn.commit()
     return 'success!'
