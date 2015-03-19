@@ -108,13 +108,13 @@ def hi():
 
 @app.route('/add_user/<name>', methods=['GET'])
 def add_user(name):
-    print 'get this party started: ', type(name)
+    print 'get this party started'
     conn, c = get_conn_cursor()
     print "CONNECTION: ", conn
     print "IS IT CLOSED: ", conn.closed
     print "CURSOR: ", dir(c)
     try:
-        c.execute('INSERT INTO users (first_name) VALUES ', name)
+        c.execute('INSERT INTO users (first_name) VALUES (%s);' % str(name))
     except psycopg2.Error as e:
         print 'HERES THE ERROR: ', e.diag.message_primary
         return 'nooooo'
