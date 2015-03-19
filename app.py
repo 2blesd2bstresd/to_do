@@ -109,7 +109,7 @@ def add_user(name):
     conn, c = get_conn_cursor()
     print "CONNECTION: ", conn
     print "IS IT CLOSED: ", conn.closed
-    print "CURSOR: ", c
+    print "CURSOR: ", dir(c)
     try:
         c.execute('INSERT INTO Users VALUES (1, ?, ?, ?, ?, ?, ?)', [datetime.now(),'max','howard','url','username','password'])
     except:
