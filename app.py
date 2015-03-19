@@ -116,7 +116,8 @@ def add_user(name):
     try:
         c.execute('INSERT INTO Users (first_name) VALUES (%s)' % name)
     except psycopg2.Error as e:
-        return 'HERES THE ERROR: ', e.diag.message_primary
+        print 'HERES THE ERROR: ', e.diag.message_primary
+        return 'nooooo'
     return 'success!'
 
 @app.route('/user/<int:user_id>', methods=['GET'])
