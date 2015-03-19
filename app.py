@@ -101,17 +101,16 @@ def hi():
     print 'HERES THE REQUEST: ', request.headers
     return 'vielkom and bienvenue.'
 
-@app.route('/add_user/<string:first_name>', methods=['POST'])
+@app.route('/add_user', methods=['POST'])
 def add_user(name):
     print 'get this party started'
-    # try:
-    #     conn, c = get_conn_cursor()
-    #     c.execute('INSERT INTO Users (first_name) VALUES (%s)' % first_name)
-    #     conn.commit()
-    #     return 'success!'
-    # except:
-        # return 'no soup for you'
-    return 'no soup for you'
+    try:
+        conn, c = get_conn_cursor()
+        c.execute('INSERT INTO Users (first_name) VALUES (%s)' % first_name)
+        conn.commit()
+        return 'success!'
+    except:
+        return 'no soup for you'
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
