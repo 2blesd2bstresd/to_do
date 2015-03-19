@@ -98,7 +98,7 @@ spotkeys = [
 
 @app.route('/')
 def hi():
-    console.log(request)
+    print 'HELLLLLLLLLO'
     return 'vielkom and bienvenue.'
 
 @app.route('/add_user/<string:first_name>', methods=['POST'])
