@@ -104,7 +104,7 @@ def hi():
 @app.route('/add_user/<string:first_name>', methods=['POST'])
 def add_user(name):
     print 'get this party started'
-        conn, c = get_conn_cursor()
+    conn, c = get_conn_cursor()
     except:
         print 'couldnt get conn or cursor'
         return 'failure'
