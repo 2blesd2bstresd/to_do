@@ -3,6 +3,7 @@ import os
 import psycopg2
 import urlparse
 from flask import Flask, jsonify, abort, request
+from datetime import datetime
 
 
 urlparse.uses_netloc.append("postgres")
@@ -16,6 +17,7 @@ def get_conn_cursor():
         host=url.hostname,
         port=url.port
     )
+    conn.autocommit=True
     c = conn.cursor()
     return conn, c
 
@@ -104,17 +106,12 @@ def hi():
 @app.route('/add_user/<name>', methods=['GET'])
 def add_user(name):
     print 'get this party started'
-    try:
-        conn, c = get_conn_cursor()
-    except:
-        return "WELL FUCK"
-    try:
-        c.execute('INSERT INTO Users (first_name) VALUES (%s)' % name)
-        conn.commit()
-        return 'success!'
-    except:
-        return 'FUCKIDY FUCK FUCK'
-    return 'not cool'
+    conn, c = get_conn_cursor()
+    print "CONNECTION: ", conn
+    print "CURSOR: ", c
+    
+    c.execute('INSERT INTO Users VALUES (1, ?, ?, ?, ?, ?, ?)', [datetime.now(),'max','howard','url','username','password'])
+    return 'success!'
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
