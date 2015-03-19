@@ -100,7 +100,7 @@ spotkeys = [
 def hi():
     return 'vielkom and bienvenue.'
 
-@app.route('/add_user&name=<string:first_name>')
+@app.route('/add_user?name=<string:first_name>')
 def add_user(name):
     conn, c = get_conn_cursor()
     c.execute('INSERT INTO Users (first_name) VALUES (%s)' % first_name)
