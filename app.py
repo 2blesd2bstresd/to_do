@@ -98,13 +98,15 @@ spotkeys = [
 
 @app.route('/')
 def hi():
+    console.log(request)
     return 'vielkom and bienvenue.'
 
 @app.route('/add_user?name=<string:first_name>', methods=['POST'])
 def add_user(name):
     conn, c = get_conn_cursor()
     c.execute('INSERT INTO Users (first_name) VALUES (%s)' % first_name)
-    conn.commit() 
+    conn.commit()
+    return 'success!'
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
