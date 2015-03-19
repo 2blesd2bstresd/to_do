@@ -114,7 +114,7 @@ def add_user(name):
     print "IS IT CLOSED: ", conn.closed
     print "CURSOR: ", dir(c)
     try:
-        c.execute('INSERT INTO Users (first_name) VALUES (%s)' % name)
+        c.execute('INSERT INTO Users (first_name) VALUES (%s)' % 'boomshakalaka')
     except psycopg2.Error as e:
         print 'HERES THE ERROR: ', e.diag.message_primary
         return 'nooooo'
