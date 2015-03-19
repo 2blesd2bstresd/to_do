@@ -15,8 +15,8 @@ def get_conn_cursor():
 
     conn = psycopg2.connect(
         database=url.path[1:],
-        user=url.username,
-        password=url.password,
+        user='yymrdbzqoowsqh',
+        password='1bmpBpFOiKPLzweXcuX04FASwB',
         host=url.hostname,
         port=url.port
     )
@@ -115,8 +115,8 @@ def add_user(name):
     print "CURSOR: ", dir(c)
     try:
         c.execute('INSERT INTO Users (first_name) VALUES (%s)' % name)
-    except:
-        return 'insert failed'
+    except psycopg2.Error as e:
+        return 'HERES THE ERROR: ', e.diag.message_primary
     return 'success!'
 
 @app.route('/user/<int:user_id>', methods=['GET'])
