@@ -126,7 +126,7 @@ def get_user(user_id):
     try:
         c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= %s" % user_id)
         user = {}
-        u = c.fetchone():
+        u = c.fetchone()
         user['id'] = u.get('id', None)
         user['first_name'] = u.get('first_name', None)
         user['last_name'] = u.get('last_name', None)
