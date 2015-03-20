@@ -150,14 +150,16 @@ def get_user(user_id):
     contacts = []
     c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=%s" % user_id)
     for con in c.fetchall():
-        contact = {'name': con.get('first_user', None),
-                   'id': con.get('first_user_id', None)}
+        contact = {'username': con.get('first_user', None),
+                   'id': con.get('first_user_id', None),
+                   'profile_url': con.get('first_user_profile_url')}
         contacts.append(contact)
 
     c.execute("SELECT second_user, second_user_id FROM Contacts WHERE first_user_id=%s" % user_id)
     for con in c.fetchall():
-        contact = {'name': con.get('second_user', None),
-                   'id': con.get('second_user_id', None)}
+        contact = {'username': con.get('second_user', None),
+                   'id': con.get('second_user_id', None),
+                   'profile_url': con.get('second_user_profile_url')}}
         contacts.append(contact)
     user['contacts'] = contacts
     
@@ -168,32 +170,16 @@ def get_user(user_id):
 def get_spotkey(spotkey_id):
     c = get_conn_cursor()
 
-    try:
-        c.execute("SELECT * FROM spotkeys WHERE id=%s" % spotkey_id)
-    except:
-        return 'SWEET'
+    c.execute("SELECT * FROM spotkeys WHERE id=%s" % spotkey_id)
 
-    try:
-        spotkey=c.fetchone()
-    except:
-        return "EMPTY QUERY"
+    spotkey=c.fetchone()
+    c.execute("SELECT * FROM spots WHERE id=%s" % spotkey.get('primary_spot_id', None))
 
-    try:
-        c.execute("SELECT * FROM spots WHERE id=%s" % spotkey.get('primary_spot_id', None))
+    spot = c.fetchone()
 
-        spot = c.fetchone()
-    except:
-
-        return "NO SPOTS"
-    
-    try:
-        if not spotkey:
+    if not spotkey:
             abort(404)
-        return jsonify({'spotkey': spotkey, 'spot': spot})
-    except:
-        print "JSON"
-        print {'spotkey': spotkey, 'spot': spot}
-        return 'NOT SWEET'
+    return jsonify({'spotkey': spotkey, 'spot': spot})
 
 @app.route('/spot/<int:spot_id>', methods=['GET'])
 def get_spot(spot_id):
