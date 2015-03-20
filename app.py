@@ -168,18 +168,24 @@ def get_user(user_id):
 def get_spotkey(spotkey_id):
     c = get_conn_cursor()
 
-    c.execute("SELECT * FROM spotkeys WHERE id=%s" % spotkey_id)
+    try:
+        c.execute("SELECT * FROM spotkeys WHERE id=%s" % spotkey_id)
+    except:
+        return 'SWEET'
 
-    spotkey=c.fetchone()
+    try:
+        spotkey=c.fetchone()
 
-    c.execute("SELECT * FROM spot WHERE id=%s" % spotkey.get('id', None))
+        c.execute("SELECT * FROM spot WHERE id=%s" % spotkey.get('id', None))
 
-    spot = c.fetchone()
+        spot = c.fetchone()
 
-    if not spotkey:
-        abort(404)
-    return jsonify({'spotkey': spotkey,
-                    'spot': spot})
+        if not spotkey:
+            abort(404)
+        return jsonify({'spotkey': spotkey,
+                        'spot': spot})
+    except:
+        return 'NOT SWEET'
 
 @app.route('/spot/<int:spot_id>', methods=['GET'])
 def get_spot(spot_id):
