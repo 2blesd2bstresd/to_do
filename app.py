@@ -175,7 +175,9 @@ def get_spotkey(spotkey_id):
 
     try:
         spotkey=c.fetchone()
-
+    except:
+        return "EMPTY QUERY"
+    try:
         c.execute("SELECT * FROM spot WHERE id=%s" % spotkey.get('id', None))
 
         spot = c.fetchone()
