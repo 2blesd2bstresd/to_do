@@ -29,77 +29,6 @@ def get_conn_cursor():
 
 app = Flask(__name__)
 
-users = [
-    {
-        'id': 1,
-        'name': u'Max',
-        'profile_url': u'http://bit.ly/1xz3ZlP',
-        'spotkeys': [{'name': u'home', 'id': 1},
-                    {'name': u'work', 'id': 5}],
-        'contacts': [{'name': u'Angelica', 'id': 2, 'profile_url': u'http://bit.ly/1xz3ZlP'},
-                     {'name': u'Tim', 'id': 3, 'profile_url': u'http://bit.ly/1xz3ZlP'}] 
-    },
-    {
-        'id': 2,
-        'title': u'Angelica',
-        'profile_url': u'http://bit.ly/1xz3ZlP',
-        'spotkeys': [{'name': u'home', 'id': 2}],
-        'contacts': [{'name': u'Max', 'id': 1, 'profile_url': u'http://bit.ly/1xz3ZlP'},
-                     {'name': u'Tim', 'id': 3, 'profile_url': u'http://bit.ly/1xz3ZlP'}] 
-    },
-    {
-        'id': 3,
-        'name': u'Tim',
-        'profile_url': u'http://bit.ly/1xz3ZlP',
-        'spotkeys': [{'name': u'home', 'id': 3}],
-        'contacts': [{'name': u'Angelica', 'id': 2, 'profile_url': u'http://bit.ly/1xz3ZlP'},
-                     {'name': u'Max', 'id': 1, 'profile_url': u'http://bit.ly/1xz3ZlP'}] 
-    },
-    {
-        'id': 4,
-        'title': u'Mike',
-        'profile_url': u'http://bit.ly/1xz3ZlP',
-        'spotkeys': [{'name': u'home', 'id': 4}],
-        'contacts' : [] 
-    },
-]
-
-spotkeys = [
-    {
-        'title': 'home',
-        'id': 1,
-        'owner_id':1,
-        'longitude': 37.7813967,
-        'latitude': -122.4044686
-    },
-    {
-        'title': 'home',
-        'id': 2,
-        'owner_id':2,
-        'longitude': 37.7813967,
-        'latitude': -122.4044686
-    },    
-    {
-        'title': 'home',
-        'id': 3,
-        'owner_id':3,
-        'longitude': 37.7813967,
-        'latitude': -122.4044686
-    },
-    {
-        'title': 'home',
-        'id': 4,
-        'owner_id':4,
-        'longitude': 37.7813967,
-        'latitude': -122.4044686
-    },
-    {
-        'title': 'work',
-        'id': 5,
-        'owner_id':1,
-        'longitude': 37.7860898,
-        'latitude': -122.3942683
-    }]
 
 @app.route('/')
 def hi():
@@ -182,11 +111,12 @@ def get_spotkey(spotkey_id):
             abort(404)
     return jsonify({'spotkey': spotkey})
 
-@app.route('/spot/<int:spot_id>', methods=['GET'])
+
+@app.route('/spotkey/<int:spotkey_id>/spot/<int:spot_id>', methods=['GET'])
 def get_spot(spot_id):
     c = get_conn_cursor()
 
-    c.execute("SELECT * FROM spots WHERE id=%s" % spot_id)
+    c.execute("SELECT * FROM spots WHERE id=%s AND spotkey_id=%s" % [spot_id, spotkey_id])
 
     spot=c.fetchone()
 
@@ -195,15 +125,12 @@ def get_spot(spot_id):
                  'error_code': 1})
     return jsonify({'spot': spot})
 
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port = port)
-
-
-
-
-
 
