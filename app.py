@@ -32,12 +32,10 @@ app = Flask(__name__)
 
 @app.route('/')
 def hi():
-    print 'HERES THE REQUEST: ', dir(request)
     return 'vielkom and bienvenue.'
 
 @app.route('/add_user/<name>', methods=['GET'])
 def add_user(name):
-    print "NAMENAMENAME: ", name
     c = get_conn_cursor()
     try:
         query = str("INSERT INTO users (first_name) VALUES (\'%s\')" % name)
@@ -117,7 +115,7 @@ def get_spot(spotkey_id, transport_type):
     c = get_conn_cursor()
 
     try:
-        c.execute("SELECT * FROM spots WHERE spotkey_id=%s AND transport_type=%s" % [spotkey_id, transport_type])
+        c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type={1}".format(spotkey_id, transport_type))
         spot=c.fetchone()
     except:
         spot = ''
