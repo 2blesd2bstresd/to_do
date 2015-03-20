@@ -125,7 +125,7 @@ def get_user(user_id):
 
     # get the user info
 
-        c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
+    c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
     try:
         user = {}
         for u in c.fetchall:
