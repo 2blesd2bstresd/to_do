@@ -124,8 +124,9 @@ def get_user(user_id):
     c = get_conn_cursor()
 
     # get the user info
-    try:
+
         c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
+    try:
         user = {}
         for u in c.fetchall:
             user = u
@@ -138,8 +139,7 @@ def get_user(user_id):
         print 'HERES THE ERROR: ', user
         return 'BIG MISTAKE'
     except:
-        for x in c.fetchall():
-            print 'HERES WHAT CAME BACK: ', json.dumps(x)
+        print 'HERES WHAT CAME BACK: ', json.dumps(c.fetchone())
         return 'SUKIT'
     try:
         # get the users spotkeys
