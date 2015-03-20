@@ -126,7 +126,11 @@ def get_user(user_id):
     try:
         c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= \'%s\'" % user_id)
         user = c.fetchone()
+    except:
+        print 'HERES THE ERROR: ', e.diag.message_primary
+        return 'BIG MISTAKE'
 
+    try:
         # get the users spotkeys
         c.execute("SELECT id, name FROM spotkeys WHERE owner_id=\'%s\'" % user_id)
         spotkeys = []
@@ -147,9 +151,10 @@ def get_user(user_id):
             contact = {'name': con['second_user'],
                        'id': con['second_user_id']}
             contacts.append(contact)
-    except psycopg2.Error as e:
-        print 'HERES THE ERROR: ', e.diag.message_primary
-        return 'BIG MISTAKE'
+    except:
+        print "BIGGER MISTAKE"
+        return "SUCK IT"
+
 
     if not user:
         abort(404)
