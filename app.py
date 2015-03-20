@@ -189,8 +189,7 @@ def get_spotkey(spotkey_id):
     try:
         if not spotkey:
             abort(404)
-        return {'spotkey': spotkey,
-                        'spot': spot}
+        return json.dumps({'spotkey': spotkey, 'spot': spot})
     except:
         print "JSON"
         print {'spotkey': spotkey, 'spot': spot}
