@@ -138,7 +138,7 @@ def get_user(user_id):
         return 'BIG MISTAKE'
     except:
         for x in c.fetchall():
-            print 'HERES WHAT CAME BACK: ', x
+            print 'HERES WHAT CAME BACK: ', row_to_json(x)
         return 'SUKIT'
     try:
         # get the users spotkeys
