@@ -1,6 +1,7 @@
 #!flask/bin/python
 import os
 import psycopg2
+from psycopg2.extras import RealDictCursor
 import urlparse
 from flask import Flask, jsonify, abort, request
 from datetime import datetime
@@ -128,8 +129,8 @@ def get_user(user_id):
     c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
     try:
         user = {}
-        for u in c.fetchall:
-            user = u
+        for u in c.fetchall(cursor_factory=RealDictCursor):
+            user = json.dumps(u)
         # u = c.fetchone()
         # user['id'] = u.get('id', None)
         # user['first_name'] = u.get('first_name', None)
