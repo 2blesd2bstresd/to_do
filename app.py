@@ -126,7 +126,7 @@ def get_user(user_id):
 
     # get the user info
     try:
-        c.execute("SELECT id->id, first_name->first_name, last_name->last_name, profile_url->profile_url FROM users WHERE id=%s" % user_id)
+        c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
 
         # print json.dumps(c.fetchall())
         # u = c.fetchone()
