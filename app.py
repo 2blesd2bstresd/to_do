@@ -103,7 +103,7 @@ spotkeys = [
 
 @app.route('/')
 def hi():
-    print 'HERES THE REQUEST: ', request.headers
+    print 'HERES THE REQUEST: ', dir(request)
     return 'vielkom and bienvenue.'
 
 @app.route('/add_user/<name>', methods=['GET'])
