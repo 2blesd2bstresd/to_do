@@ -52,7 +52,7 @@ def get_user(user_id):
     c = get_conn_cursor()
 
     # get the user info
-    c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
+    c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
     u = c.fetchone()
 
     if not u:
