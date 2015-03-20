@@ -113,7 +113,7 @@ def get_spotkey(spotkey_id):
 
 
 @app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])
-def get_spot(spot_id):
+def get_spot(spotkey_id, transport_type):
     c = get_conn_cursor()
 
     c.execute("SELECT * FROM spots WHERE spotkey_id=%s AND transpot_type=%s" % [spotkey_id, transport_type])
