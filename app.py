@@ -158,23 +158,22 @@ def get_user(user_id):
     except:
         print "BIGGEST MISTAKE"
         return "SUCK ITTTTTTTTT"
+    
+    if not user:
+        abort(404)
     try:
-        if not user:
-            abort(404)
         return jsonify({'user':
                             {'id' : user.get('id', None),
                              'first_name' : user.get('first_name', None),
                              'last_name' : user.get('last_name', None),
                              'profile_url' : user.get('profile_url', None),
-                             'spotkeys' : spotkeys,
-                             'contacts' : contacts
                             }
                         })
     except:
         print "ENDZONE"
         return "ENDZONE BABY!"
 
-        
+
 @app.route('/spotkey/<int:spotkey_id>', methods=['GET'])
 def get_spotkey(spotkey_id):
     spotkey = [sk for sk in spotkeys if sk['id'] == spotkey_id]
