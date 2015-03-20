@@ -124,7 +124,7 @@ def get_user(user_id):
 
     # get the user info
     try:
-        c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= \'%s\'" % user_id)
+        c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= %s" % user_id)
         user = c.fetchone()
     except:
         print 'HERES THE ERROR: ', e.diag.message_primary
@@ -132,7 +132,7 @@ def get_user(user_id):
 
     try:
         # get the users spotkeys
-        c.execute("SELECT id, name FROM spotkeys WHERE owner_id=\'%s\'" % user_id)
+        c.execute("SELECT id, name FROM spotkeys WHERE owner_id=%s" % user_id)
         spotkeys = []
         for sk in c.fetchall():
             spotkey = {'name' : sk['name'],
@@ -140,13 +140,13 @@ def get_user(user_id):
             spotkeys.append(spotkey)
 
         contacts = []
-        c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=\'%s\'" % user_id)
+        c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=%s" % user_id)
         for con in c.fetchall():
             contact = {'name': con['first_user'],
                        'id': con['first_user_id']}
             contacts.append(contact)
 
-        c.execute("SELECT second_user, second_user_id FROM Contacts WHERE first_user_id=\'%s\'" % user_id)
+        c.execute("SELECT second_user, second_user_id FROM Contacts WHERE first_user_id=%s" % user_id)
         for con in c.fetchall():
             contact = {'name': con['second_user'],
                        'id': con['second_user_id']}
@@ -154,7 +154,6 @@ def get_user(user_id):
     except:
         print "BIGGER MISTAKE"
         return "SUCK IT"
-
 
     if not user:
         abort(404)
