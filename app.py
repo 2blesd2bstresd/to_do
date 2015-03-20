@@ -119,7 +119,7 @@ def get_spot(spotkey_id, transport_type):
         # c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type={1}".format(spotkey_id, transport_type))
         # spots=c.fetchall()
     # except:
-        spots = ''
+    spots = ''
 
     if not spots:
         return ({'error': 'No Spots.',
