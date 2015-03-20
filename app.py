@@ -116,10 +116,11 @@ def get_spotkey(spotkey_id):
 def get_spot(spotkey_id, transport_type):
     c = get_conn_cursor()
 
-    c.execute("SELECT * FROM spots WHERE spotkey_id=%s AND transpot_type=%s" % [spotkey_id, transport_type])
-
-    spot=c.fetchone()
-
+    try:
+        c.execute("SELECT * FROM spots WHERE spotkey_id=%s AND transpot_type=%s" % [spotkey_id, transport_type])
+        spot=c.fetchone()
+    except:
+        spot = ''
     if not spot:
         return ({'error': 'No Spot',
                  'error_code': 1})
