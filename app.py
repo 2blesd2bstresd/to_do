@@ -149,6 +149,7 @@ def get_user(user_id):
             contacts.append(contact)
     except psycopg2.Error as e:
         print 'HERES THE ERROR: ', e.diag.message_primary
+        return 'BIG MISTAKE'
 
     if not user:
         abort(404)
