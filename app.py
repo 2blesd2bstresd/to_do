@@ -1,7 +1,7 @@
 #!flask/bin/python
 import os
 import psycopg2
-from psycopg2.extras import DictCursor
+from psycopg2.extras import RealDictCursor
 import urlparse
 from flask import Flask, jsonify, abort, request
 from datetime import datetime
@@ -23,7 +23,7 @@ def get_conn_cursor():
         port=url.port
     )
     conn.autocommit=True
-    c = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    c = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     return c
 
 
