@@ -6,6 +6,7 @@ import urlparse
 from flask import Flask, jsonify, abort, request
 from datetime import datetime
 import json
+from bson import json_util
 
 
 urlparse.uses_netloc.append("postgres")
@@ -189,7 +190,7 @@ def get_spotkey(spotkey_id):
     try:
         if not spotkey:
             abort(404)
-        return json.dumps({'spotkey': spotkey, 'spot': spot})
+        return json.dumps({'spotkey': spotkey, 'spot': spot}, default=json_util.default)
     except:
         print "JSON"
         print {'spotkey': spotkey, 'spot': spot}
