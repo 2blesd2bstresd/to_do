@@ -63,6 +63,7 @@ def get_user(user_id):
     user['first_name'] = u.get('first_name', None)
     user['last_name'] = u.get('last_name', None)
     user['profile_url'] = u.get('profile_url', None)
+    user['username'] = u.get('username', None)
 
     # get the users spotkeys
     c.execute("SELECT id, name, owner_id FROM spotkeys WHERE owner_id=%s" % user_id)
