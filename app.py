@@ -162,13 +162,17 @@ def get_user(user_id):
     if not user:
         abort(404)
     try:
-        return jsonify({'user':
-                            {'id' : user.get('id', None),
-                             'first_name' : user.get('first_name', None),
-                             'last_name' : user.get('last_name', None),
-                             'profile_url' : user.get('profile_url', None),
-                            }
-                        })
+        print "USER!: ", user
+        return "GET IT BRUH"
+        # return jsonify({'user':
+        #                     {'id' : user.get('id', None),
+        #                      'first_name' : user.get('first_name', None),
+        #                      'last_name' : user.get('last_name', None),
+        #                      'profile_url' : user.get('profile_url', None),
+        #                      'spotkeys' : spotkeys,
+        #                      'contacts' : contacts
+        #                     }
+        #                 })
     except:
         print "ENDZONE"
         return "ENDZONE BABY!"
