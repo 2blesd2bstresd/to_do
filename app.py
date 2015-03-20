@@ -126,7 +126,7 @@ def get_user(user_id):
 
     # get the user info
     try:
-        c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
+        c.execute("SELECT * FROM users WHERE id=%s" % user_id)
 
         # print json.dumps(c.fetchall())
         # u = c.fetchone()
@@ -135,6 +135,7 @@ def get_user(user_id):
         # user['last_name'] = u.get('last_name', None)
         # user['profile_url'] = u.get('profile_url', None)
         # except:
+        print 'HERE IT IS: ', c.fetchone()
         return 'NO MISTAKE'
     except:
         # print 'HERES WHAT CAME BACK: ', json.dumps(c)
