@@ -112,11 +112,11 @@ def get_spotkey(spotkey_id):
     return jsonify({'spotkey': spotkey})
 
 
-@app.route('/spotkey/<int:spotkey_id>/spot/<int:spot_id>', methods=['GET'])
+@app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])
 def get_spot(spot_id):
     c = get_conn_cursor()
 
-    c.execute("SELECT * FROM spots WHERE id=%s AND spotkey_id=%s" % [spot_id, spotkey_id])
+    c.execute("SELECT * FROM spots WHERE spotkey_id=%s AND transpot_type=%s" % [spotkey_id, transport_type])
 
     spot=c.fetchone()
 
