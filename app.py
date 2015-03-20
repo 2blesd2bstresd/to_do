@@ -172,9 +172,14 @@ def get_spotkey(spotkey_id):
 
     spotkey=c.fetchone()
 
+    c.execute("SELECT * FROM spot WHERE id=%s" % spotkey.get('id', None))
+
+    spot = c.fetchone()
+
     if not spotkey:
         abort(404)
-    return jsonify({'spotkey': spotkey})
+    return jsonify({'spotkey': spotkey,
+                    'spot': spot})
 
 @app.route('/spot/<int:spot_id>', methods=['GET'])
 def get_spot(spot_id):
