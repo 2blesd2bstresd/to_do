@@ -126,11 +126,11 @@ def get_user(user_id):
     try:
         c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= %s" % user_id)
         user = {}
-        for u in c.fetchall():
-            user['id'] = u.get('id', None)
-            user['first_name'] = u.get('first_name', None)
-            user['last_name'] = u.get('last_name', None)
-            user['profile_url'] = u.get('profile_url', None)
+        u = c.fetchone():
+        user['id'] = u.get('id', None)
+        user['first_name'] = u.get('first_name', None)
+        user['last_name'] = u.get('last_name', None)
+        user['profile_url'] = u.get('profile_url', None)
     except:
         print 'HERES THE ERROR: ', e.diag.message_primary
         return 'BIG MISTAKE'
