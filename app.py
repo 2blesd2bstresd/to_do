@@ -183,16 +183,18 @@ def get_spotkey(spotkey_id):
 
         spot = c.fetchone()
     except:
-        
+
         return "NO SPOTS"
     
     try:
         if not spotkey:
             abort(404)
-        return jsonify({'spotkey': spotkey,
+        return jsonify ({'spotkey': spotkey,
                         'spot': spot})
     except:
-        print "SPOCKEYYYYYY: ", spotkey
+        print "JSON"
+        print jsonify ({'spotkey': spotkey,
+                        'spot': spot})
         return 'NOT SWEET'
 
 @app.route('/spot/<int:spot_id>', methods=['GET'])
