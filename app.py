@@ -193,8 +193,7 @@ def get_spotkey(spotkey_id):
                         'spot': spot})
     except:
         print "JSON"
-        print jsonify ({'spotkey': spotkey,
-                        'spot': spot})
+        print {'spotkey': spotkey, 'spot': spot}
         return 'NOT SWEET'
 
 @app.route('/spot/<int:spot_id>', methods=['GET'])
