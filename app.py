@@ -137,6 +137,7 @@ def get_user(user_id):
         print 'HERES THE ERROR: ', user
         return 'BIG MISTAKE'
     except:
+        print 'HERES WHAT CAME BACK: ', c.fetchone()
         return 'SUKIT'
     try:
         # get the users spotkeys
