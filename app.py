@@ -125,9 +125,9 @@ def get_user(user_id):
     c = get_conn_cursor()
 
     # get the user info
-
-    c.execute("SELECT row_to_json(id, first_name, last_name, profile_url) FROM users WHERE id=%s" % user_id)
     try:
+        c.execute("SELECT row_to_json(id, first_name, last_name, profile_url) FROM users WHERE id=%s" % user_id)
+
         # print json.dumps(c.fetchall())
         # u = c.fetchone()
         # user['id'] = u.get('id', None)
@@ -137,7 +137,7 @@ def get_user(user_id):
         # except:
         return 'NO MISTAKE'
     except:
-        print 'HERES WHAT CAME BACK: ', json.dumps(c)
+        # print 'HERES WHAT CAME BACK: ', json.dumps(c)
         return 'SUKIT'
     try:
         # get the users spotkeys
