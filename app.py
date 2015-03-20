@@ -65,13 +65,18 @@ def get_user(user_id):
     user['profile_url'] = u.get('profile_url', None)
 
     # get the users spotkeys
-    c.execute("SELECT id, name FROM spotkeys WHERE owner_id=%s" % user_id)
+    c.execute("SELECT id, name, owner_id FROM spotkeys WHERE owner_id=%s" % user_id)
     spotkeys = []
     for sk in c.fetchall():
         spotkey = {'name' : sk.get('name', None),
-                   'id' : sk.get('id', None)}
+                   'id' : sk.get('id', None),
+                   'owner_id' : sk.get('owner_id', None)}
         spotkeys.append(spotkey)
+    for sk in in spotkeys:
+        c.execute("SELECT id, longitude, latitude, picture_url FROM spots WHERE spotkey_id=%s" % sk.id)
     user['spotkeys'] = spotkeys
+
+
 
     # get the users contacts
     contacts = []
