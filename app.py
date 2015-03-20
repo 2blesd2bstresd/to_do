@@ -122,7 +122,7 @@ def get_spot(spotkey_id, transport_type):
     spots = ''
 
     if not spots:
-        return ({'error': 'No Spots.',
+        return jsonify({'error': 'No Spots.',
                  'error_code': 1})
     return jsonify({'spots': spots})
 
