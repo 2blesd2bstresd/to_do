@@ -73,7 +73,7 @@ def get_user(user_id):
                    'owner_id' : sk.get('owner_id', None)}
         spotkeys.append(spotkey)
     for sk in spotkeys:
-        c.execute("SELECT id, longitude, latitude, picture_url FROM spots WHERE spotkey_id=%s" % sk.id)
+        c.execute("SELECT id, longitude, latitude, picture_url FROM spots WHERE spotkey_id=%s" % sk.get('id', None))
     user['spotkeys'] = spotkeys
 
 
