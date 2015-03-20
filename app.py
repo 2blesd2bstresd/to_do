@@ -6,7 +6,6 @@ import urlparse
 from flask import Flask, jsonify, abort, request
 from datetime import datetime
 import json
-from bson import json_util
 
 
 urlparse.uses_netloc.append("postgres")
