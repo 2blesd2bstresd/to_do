@@ -128,17 +128,14 @@ def get_user(user_id):
 
     c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
     try:
-        user = {}
-        for u in c.fetchall(cursor_factory=RealDictCursor):
-            user = json.dumps(u)
+        print json.dumps(c.fetchall())
         # u = c.fetchone()
         # user['id'] = u.get('id', None)
         # user['first_name'] = u.get('first_name', None)
         # user['last_name'] = u.get('last_name', None)
         # user['profile_url'] = u.get('profile_url', None)
-    # except:
-        print 'HERES THE ERROR: ', user
-        return 'BIG MISTAKE'
+        # except:
+        return 'NO MISTAKE'
     except:
         print 'HERES WHAT CAME BACK: ', json.dumps(c)
         return 'SUKIT'
