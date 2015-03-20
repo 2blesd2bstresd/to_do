@@ -179,10 +179,14 @@ def get_spotkey(spotkey_id):
         return "EMPTY QUERY"
 
     try:
-        c.execute("SELECT * FROM spots WHERE id=%s" % spotkey.get('id', None))
+        c.execute("SELECT * FROM spots WHERE id=%s" % spotkey.get('primary_spot_id', None))
 
         spot = c.fetchone()
-
+    except:
+        
+        return "NO SPOTS"
+    
+    try:
         if not spotkey:
             abort(404)
         return jsonify({'spotkey': spotkey,
