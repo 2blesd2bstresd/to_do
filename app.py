@@ -138,8 +138,12 @@ def get_user(user_id):
             spotkey = {'name' : sk['name'],
                        'id' : sk['id']}
             spotkeys.append(spotkey)
+    except:
+        print "BIGGER MISTAKE"
+        return "SUCK IT"
 
-        contacts = []
+    try:
+      contacts = []
         c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=%s" % user_id)
         for con in c.fetchall():
             contact = {'name': con['first_user'],
@@ -152,8 +156,8 @@ def get_user(user_id):
                        'id': con['second_user_id']}
             contacts.append(contact)
     except:
-        print "BIGGER MISTAKE"
-        return "SUCK IT"
+        print "BIGGEST MISTAKE"
+        return "SUCK ITTTTTTTTT"
 
     if not user:
         abort(404)
