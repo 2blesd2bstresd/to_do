@@ -125,16 +125,16 @@ def get_user(user_id):
     # get the user info
     try:
         c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= %i" % user_id)
-        user = {}
-        for u in c.fetchall:
-            user = u
+        # user = {}
+        # for u in c.fetchall:
+        #     user = u
         # u = c.fetchone()
         # user['id'] = u.get('id', None)
         # user['first_name'] = u.get('first_name', None)
         # user['last_name'] = u.get('last_name', None)
         # user['profile_url'] = u.get('profile_url', None)
     except:
-        print 'HERES THE ERROR: ', user
+        print 'HERES THE ERROR:'
         return 'BIG MISTAKE'
     try:
         # get the users spotkeys
