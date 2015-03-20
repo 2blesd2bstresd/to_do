@@ -22,7 +22,7 @@ def get_conn_cursor():
     )
     conn.autocommit=True
     c = conn.cursor()
-    return conn, c
+    return c
 
 
 app = Flask(__name__)
@@ -109,10 +109,7 @@ def hi():
 @app.route('/add_user/<name>', methods=['GET'])
 def add_user(name):
     print "NAMENAMENAME: ", name
-    conn, c = get_conn_cursor()
-    print "CONNECTION: ", conn
-    print "IS IT CLOSED: ", conn.closed
-    print "CURSOR: ", dir(c)
+    c = get_conn_cursor()
     try:
         query = str("INSERT INTO users (first_name) VALUES (\'%s\')" % name)
         c.execute(query)
@@ -123,7 +120,8 @@ def add_user(name):
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
-    user = [u for u in users if u['id'] == user_id]
+    c = get_conn_cursor()
+    user = c.execute("SELECT * FROM users WHERE id= \'%s\'" % user_id)
     if not user:
         abort(404)
     return jsonify({'user': user[0]})
