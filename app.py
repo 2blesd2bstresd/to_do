@@ -124,7 +124,7 @@ def get_user(user_id):
 
     # get the user info
     try:
-        c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= %s" % user_id)
+        c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= %i" % user_id)
         user = {}
         u = c.fetchone()
         user['id'] = u.get('id', None)
@@ -132,7 +132,7 @@ def get_user(user_id):
         user['last_name'] = u.get('last_name', None)
         user['profile_url'] = u.get('profile_url', None)
     except:
-        print 'HERES THE ERROR: ', user
+        print 'HERES THE ERROR: ', u
         return 'BIG MISTAKE'
     try:
         # get the users spotkeys
