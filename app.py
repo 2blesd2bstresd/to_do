@@ -132,7 +132,7 @@ def get_user(user_id):
         user['last_name'] = u.get('last_name', None)
         user['profile_url'] = u.get('profile_url', None)
     except:
-        print 'HERES THE ERROR: ', e.diag.message_primary
+        print 'HERES THE ERROR: ', user
         return 'BIG MISTAKE'
     try:
         # get the users spotkeys
