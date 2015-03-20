@@ -125,61 +125,69 @@ def get_user(user_id):
     c = get_conn_cursor()
 
     # get the user info
-    c.execute("SELECT * FROM users WHERE id=%s" % user_id)
+    c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
     u = c.fetchone()
+
+    if not u:
+        abort(404)
+
     user = {}
     user['id'] = u.get('id', None)
     user['first_name'] = u.get('first_name', None)
     user['last_name'] = u.get('last_name', None)
     user['profile_url'] = u.get('profile_url', None)
 
-    try:
-        # get the users spotkeys
-        c.execute("SELECT id, name FROM spotkeys WHERE owner_id=%s" % user_id)
-        spotkeys = []
-        for sk in c.fetchall():
-            spotkey = {'name' : sk.get('name', None),
-                       'id' : sk.get('id', None)}
-            spotkeys.append(spotkey)
-        user['spotkeys'] = spotkeys
-    except:
-        print "BIGGER MISTAKE"
-        return "SUCK IT"
+    # get the users spotkeys
+    c.execute("SELECT id, name FROM spotkeys WHERE owner_id=%s" % user_id)
+    spotkeys = []
+    for sk in c.fetchall():
+        spotkey = {'name' : sk.get('name', None),
+                   'id' : sk.get('id', None)}
+        spotkeys.append(spotkey)
+    user['spotkeys'] = spotkeys
 
-    try:
-        contacts = []
-        c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=%s" % user_id)
-        for con in c.fetchall():
-            contact = {'name': con.get('first_user', None),
-                       'id': con.get('first_user_id', None)}
-            contacts.append(contact)
+    # get the users contacts
+    contacts = []
+    c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=%s" % user_id)
+    for con in c.fetchall():
+        contact = {'name': con.get('first_user', None),
+                   'id': con.get('first_user_id', None)}
+        contacts.append(contact)
 
-        c.execute("SELECT second_user, second_user_id FROM Contacts WHERE first_user_id=%s" % user_id)
-        for con in c.fetchall():
-            contact = {'name': con.get('second_user', None),
-                       'id': con.get('second_user_id', None)}
-            contacts.append(contact)
-        user['contacts'] = contacts
-    except:
-        print "BIGGEST MISTAKE"
-        return "SUCK ITTTTTTTTT"
+    c.execute("SELECT second_user, second_user_id FROM Contacts WHERE first_user_id=%s" % user_id)
+    for con in c.fetchall():
+        contact = {'name': con.get('second_user', None),
+                   'id': con.get('second_user_id', None)}
+        contacts.append(contact)
+    user['contacts'] = contacts
     
-    if not user:
-        abort(404)
-    try:
-        print "USER!: ", user
-        return jsonify(user)
-    except:
-        print "ENDZONE"
-        return "ENDZONE BABY!"
+    return jsonify(user)
 
 
 @app.route('/spotkey/<int:spotkey_id>', methods=['GET'])
 def get_spotkey(spotkey_id):
-    spotkey = [sk for sk in spotkeys if sk['id'] == spotkey_id]
+    c = get_conn_cursor()
+
+    c.execute("SELECT * FROM spotkeys WHERE id=%s" % spotkey_id)
+
+    spotkey=c.fetchone()
+
     if not spotkey:
         abort(404)
-    return jsonify({'spotkey': spotkey[0]})
+    return jsonify({'spotkey': spotkey[]})
+
+@app.route('/spot/<int:spot_id>', methods=['GET'])
+def get_spot(spot_id):
+    c = get_conn_cursor()
+
+    c.execute("SELECT * FROM spots WHERE id=%s" % spot_id)
+
+    spot=c.fetchone()
+
+    if not spot:
+        return ({'error' : 'No Spot',
+                 'error_code': 1})
+    return jsonify({'spot': spot})
 
 @app.errorhandler(404)
 def not_found(error):
@@ -187,3 +195,9 @@ def not_found(error):
 
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port = port)
+
+
+
+
+
+
