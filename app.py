@@ -143,7 +143,7 @@ def get_user(user_id):
         return "SUCK IT"
 
     try:
-      contacts = []
+        contacts = []
         c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=%s" % user_id)
         for con in c.fetchall():
             contact = {'name': con['first_user'],
