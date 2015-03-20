@@ -121,7 +121,8 @@ def add_user(name):
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     c = get_conn_cursor()
-    user = c.execute("SELECT * FROM users WHERE id= \'%s\'" % user_id)
+    c.execute("SELECT * FROM users WHERE id= \'%s\'" % user_id)
+    user = c.fetchone()
     if not user:
         abort(404)
     return jsonify({'user': user[0]})
