@@ -189,8 +189,8 @@ def get_spotkey(spotkey_id):
     try:
         if not spotkey:
             abort(404)
-        return jsonify ({'spotkey': spotkey,
-                        'spot': spot})
+        return {'spotkey': spotkey,
+                        'spot': spot}
     except:
         print "JSON"
         print {'spotkey': spotkey, 'spot': spot}
