@@ -114,15 +114,18 @@ def get_spotkey(spotkey_id):
 def get_spot(spotkey_id, transport_type):
     c = get_conn_cursor()
 
+
+
     try:
         c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type={1}".format(spotkey_id, transport_type))
-        spot=c.fetchone()
+        spots=c.fetchall()
     except:
-        spot = ''
-    if not spot:
-        return ({'error': 'No Spot',
+        spots = ''
+
+    if not spots:
+        return ({'error': 'No Spots.',
                  'error_code': 1})
-    return jsonify({'spot': spot})
+    return jsonify({'spots': spots})
 
 
 
