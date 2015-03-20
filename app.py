@@ -148,14 +148,14 @@ def get_user(user_id):
 
     # get the users contacts
     contacts = []
-    c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=%s" % user_id)
+    c.execute("SELECT first_user, first_user_id, first_user_profile_url FROM Contacts WHERE second_user_id=%s" % user_id)
     for con in c.fetchall():
         contact = {'username': con.get('first_user', None),
                    'id': con.get('first_user_id', None),
                    'profile_url': con.get('first_user_profile_url', None)}
         contacts.append(contact)
 
-    c.execute("SELECT second_user, second_user_id FROM Contacts WHERE first_user_id=%s" % user_id)
+    c.execute("SELECT second_user, second_user_id, second_user_profile_url FROM Contacts WHERE first_user_id=%s" % user_id)
     for con in c.fetchall():
         contact = {'username': con.get('second_user', None),
                    'id': con.get('second_user_id', None),
@@ -176,10 +176,11 @@ def get_spotkey(spotkey_id):
     c.execute("SELECT * FROM spots WHERE id=%s" % spotkey.get('primary_spot_id', None))
 
     spot = c.fetchone()
+    spotkey['spot'] = spot
 
     if not spotkey:
             abort(404)
-    return jsonify({'spotkey': spotkey, 'spot': spot})
+    return jsonify({'spotkey': spotkey})
 
 @app.route('/spot/<int:spot_id>', methods=['GET'])
 def get_spot(spot_id):
