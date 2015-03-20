@@ -117,7 +117,7 @@ def get_spot(spotkey_id, transport_type):
     c = get_conn_cursor()
 
     try:
-        c.execute("SELECT * FROM spots WHERE spotkey_id=%s AND transpot_type=%s" % [spotkey_id, transport_type])
+        c.execute("SELECT * FROM spots WHERE spotkey_id=%s AND transport_type=%s" % [spotkey_id, transport_type])
         spot=c.fetchone()
     except:
         spot = ''
