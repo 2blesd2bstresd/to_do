@@ -34,24 +34,24 @@ users = [
         'profile_url': u'http://bit.ly/1xz3ZlP',
         'spotkeys': [{'name': u'home', 'id': 1},
                     {'name': u'work', 'id': 5}],
-        'contacts': [{'name': u'Angelica', 'id': 2,},
-                     {'name': u'Tim', 'id': 3}] 
+        'contacts': [{'name': u'Angelica', 'id': 2, 'profile_url': u'http://bit.ly/1xz3ZlP'},
+                     {'name': u'Tim', 'id': 3, 'profile_url': u'http://bit.ly/1xz3ZlP'}] 
     },
     {
         'id': 2,
         'title': u'Angelica',
         'profile_url': u'http://bit.ly/1xz3ZlP',
         'spotkeys': [{'name': u'home', 'id': 2}],
-        'contacts': [{'name': u'Max', 'id': 1,},
-                     {'name': u'Tim', 'id': 3}] 
+        'contacts': [{'name': u'Max', 'id': 1, 'profile_url': u'http://bit.ly/1xz3ZlP'},
+                     {'name': u'Tim', 'id': 3, 'profile_url': u'http://bit.ly/1xz3ZlP'}] 
     },
     {
         'id': 3,
         'name': u'Tim',
         'profile_url': u'http://bit.ly/1xz3ZlP',
         'spotkeys': [{'name': u'home', 'id': 3}],
-        'contacts': [{'name': u'Angelica', 'id': 2,},
-                     {'name': u'Max', 'id': 1}] 
+        'contacts': [{'name': u'Angelica', 'id': 2, 'profile_url': u'http://bit.ly/1xz3ZlP'},
+                     {'name': u'Max', 'id': 1, 'profile_url': u'http://bit.ly/1xz3ZlP'}] 
     },
     {
         'id': 4,
@@ -60,8 +60,6 @@ users = [
         'spotkeys': [{'name': u'home', 'id': 4}],
         'contacts' : [] 
     },
-
-
 ]
 
 spotkeys = [
@@ -120,12 +118,46 @@ def add_user(name):
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
+
+    # get the query cursor
     c = get_conn_cursor()
-    c.execute("SELECT * FROM users WHERE id= \'%s\'" % user_id)
+
+    # get the user info
+    c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= \'%s\'" % user_id)
     user = c.fetchone()
+
+    # get the users spotkeys
+    c.execute("SELECT id, name FROM spotkeys WHERE owner_id=\'%s\'" % user_id)
+    spotkeys = []
+    for sk in c.fetchall():
+        spotkey = {'name' : sk['name'],
+                   'id' : sk['id']}
+        spotkeys.append(spotkey)
+
+    contacts = []
+    c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=\'%s\'" % user_id)
+    for con in c.fetchall():
+        contact = {'name': con['first_user'],
+                   'id': con['first_user_id']}
+        contacts.append(contact)
+
+    c.execute("SELECT second_user, second_user_id FROM Contacts WHERE first_user_id=\'%s\'" % user_id)
+    for con in c.fetchall():
+        contact = {'name': con['second_user'],
+                   'id': con['second_user_id']}
+        contacts.append(contact)
+
     if not user:
         abort(404)
-    return jsonify({'user': user[0]})
+    return jsonify({'user':
+                        {'id' : user.get('id', None),
+                         'first_name' : user.get('first_name', None),
+                         'last_name' : user.get('last_name', None),
+                         'profile_url' : user.get('profile_url', None),
+                         'spotkeys' : spotkeys,
+                         'contacts' : contacts
+                        }
+                    })
 
 @app.route('/spotkey/<int:spotkey_id>', methods=['GET'])
 def get_spotkey(spotkey_id):
