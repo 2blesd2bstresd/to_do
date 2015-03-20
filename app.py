@@ -128,7 +128,7 @@ def get_user(user_id):
 
     c.execute("SELECT row_to_json(id, first_name, last_name, profile_url) FROM users WHERE id=%s" % user_id)
     try:
-        print json.dumps(c.fetchall())
+        # print json.dumps(c.fetchall())
         # u = c.fetchone()
         # user['id'] = u.get('id', None)
         # user['first_name'] = u.get('first_name', None)
