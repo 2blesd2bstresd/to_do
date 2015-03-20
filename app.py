@@ -125,11 +125,15 @@ def get_user(user_id):
     # get the user info
     try:
         c.execute("SELECT id, first_name, last_name, profile_url FROM users WHERE id= %s" % user_id)
-        user = c.fetchone()
+        user = {}
+        for u in c.fetchall():
+            user['id'] = u.get('id', None)
+            user['first_name'] = u.get('first_name', None)
+            user['last_name'] = u.get('last_name', None)
+            user['profile_url'] = u.get('profile_url', None)
     except:
         print 'HERES THE ERROR: ', e.diag.message_primary
         return 'BIG MISTAKE'
-
     try:
         # get the users spotkeys
         c.execute("SELECT id, name FROM spotkeys WHERE owner_id=%s" % user_id)
@@ -138,6 +142,7 @@ def get_user(user_id):
             spotkey = {'name' : sk.get('name', None),
                        'id' : sk.get('id', None)}
             spotkeys.append(spotkey)
+        user['spotkeys'] = spotkeys
     except:
         print "BIGGER MISTAKE"
         return "SUCK IT"
@@ -155,6 +160,7 @@ def get_user(user_id):
             contact = {'name': con.get('second_user', None),
                        'id': con.get('second_user_id', None)}
             contacts.append(contact)
+        user['contacts'] = contacts
     except:
         print "BIGGEST MISTAKE"
         return "SUCK ITTTTTTTTT"
@@ -163,16 +169,7 @@ def get_user(user_id):
         abort(404)
     try:
         print "USER!: ", user
-        return "GET IT BRUH"
-        # return jsonify({'user':
-        #                     {'id' : user.get('id', None),
-        #                      'first_name' : user.get('first_name', None),
-        #                      'last_name' : user.get('last_name', None),
-        #                      'profile_url' : user.get('profile_url', None),
-        #                      'spotkeys' : spotkeys,
-        #                      'contacts' : contacts
-        #                     }
-        #                 })
+        return jsonify(user)
     except:
         print "ENDZONE"
         return "ENDZONE BABY!"
