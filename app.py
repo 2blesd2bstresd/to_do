@@ -152,14 +152,14 @@ def get_user(user_id):
     for con in c.fetchall():
         contact = {'username': con.get('first_user', None),
                    'id': con.get('first_user_id', None),
-                   'profile_url': con.get('first_user_profile_url')}
+                   'profile_url': con.get('first_user_profile_url', None)}
         contacts.append(contact)
 
     c.execute("SELECT second_user, second_user_id FROM Contacts WHERE first_user_id=%s" % user_id)
     for con in c.fetchall():
         contact = {'username': con.get('second_user', None),
                    'id': con.get('second_user_id', None),
-                   'profile_url': con.get('second_user_profile_url')}
+                   'profile_url': con.get('second_user_profile_url', None)}
         contacts.append(contact)
     user['contacts'] = contacts
     
