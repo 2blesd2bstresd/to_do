@@ -135,8 +135,8 @@ def get_user(user_id):
         c.execute("SELECT id, name FROM spotkeys WHERE owner_id=%s" % user_id)
         spotkeys = []
         for sk in c.fetchall():
-            spotkey = {'name' : sk['name'],
-                       'id' : sk['id']}
+            spotkey = {'name' : sk.get('name', None),
+                       'id' : sk.get('id', None)}
             spotkeys.append(spotkey)
     except:
         print "BIGGER MISTAKE"
@@ -146,14 +146,14 @@ def get_user(user_id):
         contacts = []
         c.execute("SELECT first_user, first_user_id FROM Contacts WHERE second_user_id=%s" % user_id)
         for con in c.fetchall():
-            contact = {'name': con['first_user'],
-                       'id': con['first_user_id']}
+            contact = {'name': con.get('first_user', None),
+                       'id': con.get('first_user_id', None)}
             contacts.append(contact)
 
         c.execute("SELECT second_user, second_user_id FROM Contacts WHERE first_user_id=%s" % user_id)
         for con in c.fetchall():
-            contact = {'name': con['second_user'],
-                       'id': con['second_user_id']}
+            contact = {'name': con.get('second_user', None),
+                       'id': con.get('second_user_id', None)}
             contacts.append(contact)
     except:
         print "BIGGEST MISTAKE"
