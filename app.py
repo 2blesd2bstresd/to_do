@@ -125,21 +125,14 @@ def get_user(user_id):
     c = get_conn_cursor()
 
     # get the user info
-    try:
-        c.execute("SELECT * FROM users WHERE id=%s" % user_id)
+    c.execute("SELECT * FROM users WHERE id=%s" % user_id)
+    u = c.fetchone()
+    user = {}
+    user['id'] = u.get('id', None)
+    user['first_name'] = u.get('first_name', None)
+    user['last_name'] = u.get('last_name', None)
+    user['profile_url'] = u.get('profile_url', None)
 
-        # print json.dumps(c.fetchall())
-        # u = c.fetchone()
-        # user['id'] = u.get('id', None)
-        # user['first_name'] = u.get('first_name', None)
-        # user['last_name'] = u.get('last_name', None)
-        # user['profile_url'] = u.get('profile_url', None)
-        # except:
-        print 'HERE IT IS: ', c.fetchone()
-        return 'NO MISTAKE'
-    except:
-        # print 'HERES WHAT CAME BACK: ', json.dumps(c)
-        return 'SUKIT'
     try:
         # get the users spotkeys
         c.execute("SELECT id, name FROM spotkeys WHERE owner_id=%s" % user_id)
