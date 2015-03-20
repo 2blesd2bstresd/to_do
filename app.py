@@ -4,6 +4,7 @@ import psycopg2
 import urlparse
 from flask import Flask, jsonify, abort, request
 from datetime import datetime
+import json
 
 
 urlparse.uses_netloc.append("postgres")
@@ -138,7 +139,7 @@ def get_user(user_id):
         return 'BIG MISTAKE'
     except:
         for x in c.fetchall():
-            print 'HERES WHAT CAME BACK: ', row_to_json(x)
+            print 'HERES WHAT CAME BACK: ', json.dumps(x)
         return 'SUKIT'
     try:
         # get the users spotkeys
