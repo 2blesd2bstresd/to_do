@@ -89,7 +89,7 @@ def get_user(user_id):
     user['username'] = u.get('username', None)
 
     # get the users spotkeys
-    c.execute("SELECT id, name, owner_id FROM spotkeys WHERE owner_id=%s" % user_id)
+    c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % user_id)
     spotkeys = []
     try:
         for sk in c.fetchall():
