@@ -37,8 +37,7 @@ def hi():
 @app.route('/add_user', methods=['POST'])
 def add_user():
 
-    name = 'maaaaax'
-    print 'REQUEST: ', request.form.keys
+    name = request.form.get('name', None)
 
     c = get_conn_cursor()
     try:
