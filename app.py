@@ -37,11 +37,24 @@ def hi():
 @app.route('/add_user', methods=['POST'])
 def add_user():
 
-    name = request.form.get('name', None)
+    first_name = request.form.get('first_name', None)
+    last_name = request.form.get('last_name', None)
+    email = request.form.get('email', None)
+    username = request.form.get('username', None)
+    password = request.form.get('password', None)
 
     c = get_conn_cursor()
     try:
-        query = str("INSERT INTO users (first_name) VALUES (\'%s\')" % name)
+        query = str("""INSERT INTO users (first_name, 
+                                        last_name, 
+                                         email, 
+                                         username, 
+                                         password) 
+                     VALUES (\'{0}\', 
+                             \'{1}\', 
+                             \'{2}\', 
+                             \'{3}\', 
+                             \'{4}\')""".format(first_name, last_name, email, username, password)
         c.execute(query)
     except psycopg2.Error as e:
         print 'HERES THE ERROR: ', e.diag.message_primary
