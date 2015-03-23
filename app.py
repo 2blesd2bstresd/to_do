@@ -63,7 +63,7 @@ def register_user():
                                \'{4}\')""".format(first_name, last_name, email, username, password))
         c.execute(query)
     except psycopg2.Error as e:
-        r = jsonify('Error': e)
+        r = jsonify({'Error': e})
         r.status_code = 400
         return r
     return jsonify {'status_code': 200,
@@ -149,7 +149,7 @@ def all_spotkeys(user_id):
                           'picture_url': spot.get('picture_url', None),
                           'details': spot.get('details', None)
                       }
-    return jsonify(spotkeys)
+    return jsonify({'spotkeys': spotkeys})
 
 
 @app.route('/spotkey/<int:spotkey_id>', methods=['GET'])
