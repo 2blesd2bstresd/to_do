@@ -4,8 +4,8 @@ import psycopg2
 # from functools import wraps
 from psycopg2.extras import RealDictCursor
 import urlparse
-from flask import Flask, jsonify, abort, request, session
-# from flask.ext.sqlalchemy import SQLAlchemy
+from flask import Flask, jsonify, abort, request, session, Response
+from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
 
@@ -15,9 +15,9 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 
 app = Flask(__name__)
-# app.config.from_object('config')
-# db = SQLAlchemy(app)
-# from models import User
+app.config.from_object('config')
+db = SQLAlchemy(app)
+from models import User
 
 
 def get_conn_cursor():
@@ -38,41 +38,36 @@ def get_conn_cursor():
 def hi():
     return 'vielkom and bienvenue.'
 
-# @app.route('/add_user', methods=['POST'])
-# def add_user():
+@app.route('/add_user', methods=['POST'])
+def register_user():
 
-#     first_name = request.form.get('first_name', None)
-#     last_name = request.form.get('last_name', None)
-#     email = request.form.get('email', None)
-#     username = request.form.get('username', None)
-#     password = request.form.get('password', None)
+    form = request.form
 
-#     form = request.form
+    first_name = form.get('first_name', None)
+    last_name = form.get('last_name', None)
+    email = form.get('email', None)
+    username = form.get('username', None)
+    password = form.get('password', None)
 
-#     try:
-#         new_user = User(first_name, last_name, email, username, password)
-#         db.session.add(new_user)
-#         db.session.commit()
-#     except:
-#         return "weak"
-
-    # c = get_conn_cursor()
-    # try:
-    #     query = str("""INSERT INTO users (first_name, 
-    #                                     last_name, 
-    #                                      email, 
-    #                                      username, 
-    #                                      password) 
-    #                  VALUES (\'{0}\', 
-    #                          \'{1}\', 
-    #                          \'{2}\', 
-    #                          \'{3}\', 
-    #                          \'{4}\')""".format(first_name, last_name, email, username, password))
-    #     c.execute(query)
-    # except psycopg2.Error as e:
-    #     print 'HERES THE ERROR: ', e.diag.message_primary
-    #     return 'nooooo'
-    return 'success!'
+    c = get_conn_cursor()
+    try:
+        query = str("""INSERT INTO users (first_name, 
+                                        last_name, 
+                                         email, 
+                                         username, 
+                                         password) 
+                       VALUES (\'{0}\', 
+                               \'{1}\', 
+                               \'{2}\', 
+                               \'{3}\', 
+                               \'{4}\')""".format(first_name, last_name, email, username, password))
+        c.execute(query)
+    except psycopg2.Error as e:
+        r = jsonify('Error': e)
+        r.status_code = 400
+        return r
+    return jsonify {'status_code': 200,
+                    'date': datetime.now()}
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
@@ -100,10 +95,11 @@ def get_user(user_id):
     for sk in c.fetchall():
         spotkey = {'name' : sk.get('name', None),
                    'id' : sk.get('id', None),
-                   'owner_id' : sk.get('owner_id', None)}
+                   'owner_id' : sk.get('owner_id', None),
+                   'primary_spot_id': sk.get('primary_spot_id')}
         spotkeys.append(spotkey)
     for sk in spotkeys:
-        c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE spotkey_id=%s" % sk.get('id', None))
+        c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
         spot = c.fetchone()
         sk['spot'] = {'id': spot.get('id', None),
                       'longitude': spot.get('longitude', None),
@@ -115,22 +111,45 @@ def get_user(user_id):
 
     # get the users contacts
     contacts = []
-    c.execute("SELECT first_user, first_user_id, first_user_profile_url FROM Contacts WHERE second_user_id=%s" % user_id)
+    c.execute("SELECT primary_id, contact_id, contact_profile_url FROM Contacts WHERE primary_id=%s" % user_id)
     for con in c.fetchall():
-        contact = {'username': con.get('first_user', None),
-                   'id': con.get('first_user_id', None),
-                   'profile_url': con.get('first_user_profile_url', None)}
-        contacts.append(contact)
-
-    c.execute("SELECT second_user, second_user_id, second_user_profile_url FROM Contacts WHERE first_user_id=%s" % user_id)
-    for con in c.fetchall():
-        contact = {'username': con.get('second_user', None),
-                   'id': con.get('second_user_id', None),
-                   'profile_url': con.get('second_user_profile_url', None)}
+        contact = {'username': con.get('contact_username', None),
+                   'id': con.get('contact_id', None),
+                   'profile_url': con.get('profile_url', None)}
         contacts.append(contact)
     user['contacts'] = contacts
     
     return jsonify(user)
+
+
+@app.route('/all_spotkeys/<int:user_id>', methods=['GET'])
+def all_spotkeys(user_id):
+    c = get_conn_cursor()
+
+    spotkeys = []
+
+    c.execute("SELECT primary_id, contact_id, contact_profile_url FROM Contacts WHERE primary_id=%s" % user_id)
+    contacts = [con.get('contact_id', None) for con in c.fetchall()]
+
+    for con_id in contacts:
+        c.execute("SELECT id, name, owner_id FROM spotkeys WHERE owner_id=%s" % con_id)
+        spotkeys = []
+        for sk in c.fetchall():
+            spotkey = {'name' : sk.get('name', None),
+                       'id' : sk.get('id', None),
+                       'owner_id' : sk.get('owner_id', None),
+                       'primary_spot_id': sk.get('primary_spot_id')}
+            spotkeys.append(spotkey)
+        for sk in spotkeys:
+            c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
+            spot = c.fetchone()
+            sk['spot'] = {'id': spot.get('id', None),
+                          'longitude': spot.get('longitude', None),
+                          'latitude': spot.get('latitude', None),
+                          'picture_url': spot.get('picture_url', None),
+                          'details': spot.get('details', None)
+                      }
+    return jsonify(spotkeys)
 
 
 @app.route('/spotkey/<int:spotkey_id>', methods=['GET'])
