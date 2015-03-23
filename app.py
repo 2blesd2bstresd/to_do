@@ -38,7 +38,7 @@ def hi():
 def add_user():
 
     name = 'maaaaax'
-    print 'REQUEST: ', dir(request.form)
+    print 'REQUEST: ', request.form.keys
 
     c = get_conn_cursor()
     try:
