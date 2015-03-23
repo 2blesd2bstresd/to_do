@@ -112,7 +112,7 @@ def get_user(user_id):
                           }
         user['spotkeys'] = spotkeys
     except:
-        return 'adding spots'
+        return jsonify(spotkeys)
 
     # get the users contacts
     try:
