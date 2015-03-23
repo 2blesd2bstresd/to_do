@@ -141,6 +141,8 @@ def all_spotkeys(user_id):
     contacts = [con.get('contact_id', None) for con in c.fetchall()]
     contacts.append(user_id)
 
+    print 'CONTACTS: ', contacts
+
     for con_id in contacts:
         c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % con_id)
         spotkeys = []
