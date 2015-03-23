@@ -142,10 +142,10 @@ def all_spotkeys(user_id):
     contacts.append(user_id)
 
     print 'CONTACTS: ', contacts
-
+    spotkeys = []
     for con_id in contacts:
         c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % con_id)
-        spotkeys = []
+
         for sk in c.fetchall():
             spotkey = {'name' : sk.get('name', None),
                        'id' : sk.get('id', None),
