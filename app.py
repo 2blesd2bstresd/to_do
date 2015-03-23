@@ -15,9 +15,9 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 
 app = Flask(__name__)
-app.config.from_object('config')
-db = SQLAlchemy(app)
-from models import User
+# app.config.from_object('config')
+# db = SQLAlchemy(app)
+# from models import User
 
 
 def get_conn_cursor():
@@ -38,23 +38,23 @@ def get_conn_cursor():
 def hi():
     return 'vielkom and bienvenue.'
 
-@app.route('/add_user', methods=['POST'])
-def add_user():
+# @app.route('/add_user', methods=['POST'])
+# def add_user():
 
-    first_name = request.form.get('first_name', None)
-    last_name = request.form.get('last_name', None)
-    email = request.form.get('email', None)
-    username = request.form.get('username', None)
-    password = request.form.get('password', None)
+#     first_name = request.form.get('first_name', None)
+#     last_name = request.form.get('last_name', None)
+#     email = request.form.get('email', None)
+#     username = request.form.get('username', None)
+#     password = request.form.get('password', None)
 
-    form = request.form
+#     form = request.form
 
-    try:
-        new_user = User(first_name, last_name, email, username, password)
-        db.session.add(new_user)
-        db.session.commit()
-    except:
-        return "weak"
+#     try:
+#         new_user = User(first_name, last_name, email, username, password)
+#         db.session.add(new_user)
+#         db.session.commit()
+#     except:
+#         return "weak"
 
     # c = get_conn_cursor()
     # try:
