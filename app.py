@@ -96,7 +96,7 @@ def get_user(user_id):
             spotkey = {'name' : sk.get('name', None),
                        'id' : sk.get('id', None),
                        'owner_id' : sk.get('owner_id', None),
-                       'primary_spot_id': sk.get('primary_spot_id')}
+                       'primary_spot_id': sk.get('primary_spot_id', None)}
             spotkeys.append(spotkey)
     except:
         return 'adding spotkeys'
