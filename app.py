@@ -108,7 +108,7 @@ def get_user(user_id):
         sk['spot'] = {'id': spot.get('id', None),
                       'longitude': spot.get('longitude', None),
                       'latitude': spot.get('latitude', None),
-                      'picture_url': spot.get('picture_url', None)
+                      'picture_url': spot.get('picture_url', None),
                       'details': spot.get('details', None)
                       }
     user['spotkeys'] = spotkeys
