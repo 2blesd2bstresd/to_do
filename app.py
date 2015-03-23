@@ -1,9 +1,11 @@
 #!flask/bin/python
 import os
 import psycopg2
+# from functools import wraps
 from psycopg2.extras import RealDictCursor
 import urlparse
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request, session
+from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
 
@@ -11,9 +13,14 @@ import json
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
-def get_conn_cursor():
 
-    print "URL: ", url
+app = Flask(__name__)
+app.config.from_object('config')
+db = SQLAlchemy(app)
+from models import User
+
+
+def get_conn_cursor():
 
     conn = psycopg2.connect(
         database=url.path[1:],
@@ -25,9 +32,6 @@ def get_conn_cursor():
     conn.autocommit=True
     c = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     return c
-
-
-app = Flask(__name__)
 
 
 @app.route('/')
@@ -43,22 +47,31 @@ def add_user():
     username = request.form.get('username', None)
     password = request.form.get('password', None)
 
-    c = get_conn_cursor()
+    form = request.form
+
     try:
-        query = str("""INSERT INTO users (first_name, 
-                                        last_name, 
-                                         email, 
-                                         username, 
-                                         password) 
-                     VALUES (\'{0}\', 
-                             \'{1}\', 
-                             \'{2}\', 
-                             \'{3}\', 
-                             \'{4}\')""".format(first_name, last_name, email, username, password))
-        c.execute(query)
-    except psycopg2.Error as e:
-        print 'HERES THE ERROR: ', e.diag.message_primary
-        return 'nooooo'
+        new_user = User(first_name, last_name, email, username, password)
+        db.session.add(new_user)
+        db.session.commit()
+    except:
+        return "weak"
+
+    # c = get_conn_cursor()
+    # try:
+    #     query = str("""INSERT INTO users (first_name, 
+    #                                     last_name, 
+    #                                      email, 
+    #                                      username, 
+    #                                      password) 
+    #                  VALUES (\'{0}\', 
+    #                          \'{1}\', 
+    #                          \'{2}\', 
+    #                          \'{3}\', 
+    #                          \'{4}\')""".format(first_name, last_name, email, username, password))
+    #     c.execute(query)
+    # except psycopg2.Error as e:
+    #     print 'HERES THE ERROR: ', e.diag.message_primary
+    #     return 'nooooo'
     return 'success!'
 
 @app.route('/user/<int:user_id>', methods=['GET'])
