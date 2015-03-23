@@ -15,9 +15,9 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 
 app = Flask(__name__)
-app.config.from_object('config')
-db = SQLAlchemy(app)
-from models import User
+# app.config.from_object('config')
+# db = SQLAlchemy(app)
+# from models import User
 
 
 def get_conn_cursor():
