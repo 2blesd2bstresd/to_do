@@ -98,6 +98,7 @@ def get_user(user_id):
                        'owner_id' : sk.get('owner_id', None),
                        'primary_spot_id': sk.get('primary_spot_id', None)}
             spotkeys.append(spotkey)
+        print "SPOTKEYS: ", spotkeys
     except:
         return 'adding spotkeys'
     try:
@@ -112,7 +113,7 @@ def get_user(user_id):
                           }
         user['spotkeys'] = spotkeys
     except:
-        return jsonify(spotkeys)
+        return 'yikes'
 
     # get the users contacts
     try:
