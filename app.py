@@ -66,8 +66,7 @@ def register_user():
         r = jsonify({'Error': e})
         r.status_code = 400
         return r
-    return jsonify {'status_code': 200,
-                    'date': datetime.now()}
+    return jsonify ({'status_code': 200, 'date': datetime.now()})
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
