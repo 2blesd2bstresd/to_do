@@ -38,6 +38,8 @@ def hi():
 def add_user():
 
     name = request.args.get('name')
+    print 'REQUEST: ', dir(request)
+    print 'ARGS: ', dir(request.args)
 
     c = get_conn_cursor()
     try:
