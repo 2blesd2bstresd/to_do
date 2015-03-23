@@ -37,7 +37,7 @@ def hi():
 @app.route('/add_user', methods=['POST'])
 def add_user():
 
-    name = request.json.get('name')
+    name = 'maaaaax'
     print 'REQUEST: ', request.json
 
     c = get_conn_cursor()
