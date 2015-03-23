@@ -54,7 +54,7 @@ def add_user():
                              \'{1}\', 
                              \'{2}\', 
                              \'{3}\', 
-                             \'{4}\')""".format(first_name, last_name, email, username, password)
+                             \'{4}\')""".format(first_name, last_name, email, username, password))
         c.execute(query)
     except psycopg2.Error as e:
         print 'HERES THE ERROR: ', e.diag.message_primary
