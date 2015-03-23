@@ -91,32 +91,41 @@ def get_user(user_id):
     # get the users spotkeys
     c.execute("SELECT id, name, owner_id FROM spotkeys WHERE owner_id=%s" % user_id)
     spotkeys = []
-    for sk in c.fetchall():
-        spotkey = {'name' : sk.get('name', None),
-                   'id' : sk.get('id', None),
-                   'owner_id' : sk.get('owner_id', None),
-                   'primary_spot_id': sk.get('primary_spot_id')}
-        spotkeys.append(spotkey)
-    for sk in spotkeys:
-        c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
-        spot = c.fetchone()
-        sk['spot'] = {'id': spot.get('id', None),
-                      'longitude': spot.get('longitude', None),
-                      'latitude': spot.get('latitude', None),
-                      'picture_url': spot.get('picture_url', None),
-                      'details': spot.get('details', None)
-                      }
-    user['spotkeys'] = spotkeys
+    try:
+        for sk in c.fetchall():
+            spotkey = {'name' : sk.get('name', None),
+                       'id' : sk.get('id', None),
+                       'owner_id' : sk.get('owner_id', None),
+                       'primary_spot_id': sk.get('primary_spot_id')}
+            spotkeys.append(spotkey)
+    except:
+        return 'adding spotkeys'
+    try:
+        for sk in spotkeys:
+            c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
+            spot = c.fetchone()
+            sk['spot'] = {'id': spot.get('id', None),
+                          'longitude': spot.get('longitude', None),
+                          'latitude': spot.get('latitude', None),
+                          'picture_url': spot.get('picture_url', None),
+                          'details': spot.get('details', None)
+                          }
+        user['spotkeys'] = spotkeys
+    except:
+        return 'adding spots'
 
     # get the users contacts
-    contacts = []
-    c.execute("SELECT primary_id, contact_id, contact_profile_url FROM Contacts WHERE primary_id=%s" % user_id)
-    for con in c.fetchall():
-        contact = {'username': con.get('contact_username', None),
-                   'id': con.get('contact_id', None),
-                   'profile_url': con.get('profile_url', None)}
-        contacts.append(contact)
-    user['contacts'] = contacts
+    try:
+        contacts = []
+        c.execute("SELECT primary_id, contact_id, contact_profile_url FROM Contacts WHERE primary_id=%s" % user_id)
+        for con in c.fetchall():
+            contact = {'username': con.get('contact_username', None),
+                       'id': con.get('contact_id', None),
+                       'profile_url': con.get('profile_url', None)}
+            contacts.append(contact)
+        user['contacts'] = contacts
+    except:
+        return 'adding contacts'
     
     return jsonify(user)
 
