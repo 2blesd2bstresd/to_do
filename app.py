@@ -34,8 +34,11 @@ app = Flask(__name__)
 def hi():
     return 'vielkom and bienvenue.'
 
-@app.route('/add_user/<name>', methods=['GET'])
-def add_user(name):
+@app.route('/add_user', methods=['POST'])
+def add_user():
+
+    name = request.args.get('name')
+
     c = get_conn_cursor()
     try:
         query = str("INSERT INTO users (first_name) VALUES (\'%s\')" % name)
@@ -83,8 +86,6 @@ def get_user(user_id):
                       }
     user['spotkeys'] = spotkeys
 
-
-
     # get the users contacts
     contacts = []
     c.execute("SELECT first_user, first_user_id, first_user_profile_url FROM Contacts WHERE second_user_id=%s" % user_id)
@@ -125,19 +126,13 @@ def get_spotkey(spotkey_id):
 @app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])
 def get_spot(spotkey_id, transport_type):
     c = get_conn_cursor()
-
-    print "SPOTKEY TRANSPORT TYPE: ", spotkey_id, ': ', transport_type
-    try:
-        c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type=\'{1}\' ORDER BY priority".format(spotkey_id, transport_type))
-        spots=c.fetchall()
-    except:
-        spots = ''
+    c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type=\'{1}\' ORDER BY priority".format(spotkey_id, transport_type))        
+    spots=c.fetchall()
 
     if not spots:
         return jsonify({'error': 'No Spots.',
                  'error_code': 1})
     return jsonify({'spots': spots})
-
 
 
 @app.errorhandler(404)
