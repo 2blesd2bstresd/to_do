@@ -85,7 +85,7 @@ def login():
     #         spotkeys.append(sk)
     #     user['spotkeys'] = spotkeys
     # else:
-        return 'interesting'
+    return 'interesting'
     #     # get the users spotkeys
     #     # user['spotkeys'] = get_spotkeys(user_id)
 
