@@ -35,7 +35,11 @@ def get_conn_cursor():
 
 
 def get_spotkeys(user_id):
-    c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % user_id)
+    try:
+        c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % user_id)
+    except:
+        print 'broke query'
+        return []
     spotkeys = []
     try:
         for sk in c.fetchall():
