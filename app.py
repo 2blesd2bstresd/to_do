@@ -65,8 +65,8 @@ def hi():
 def login():
 
     # c = get_conn_cursor()
-
-    print "REQUEST: ", request.headers
+    print "REQUEST: ", dir(request)
+    print "HEADERS: ", dir(request.headers)
     return 'try again'
 
     # headers = request.headers
