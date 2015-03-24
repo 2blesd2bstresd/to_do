@@ -112,7 +112,7 @@ def get_user(user_id):
     user['username'] = u.get('username', None)
 
     # get the users spotkeys
-    user['spotkeys'] = spotkeys(user_id)
+    user['spotkeys'] = get_spotkeys(user_id)
 
     # get the users contacts
     try:
