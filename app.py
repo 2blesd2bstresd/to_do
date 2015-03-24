@@ -45,12 +45,13 @@ def get_spotkeys(user_id, c):
                    'primary_spot_id': sk.get('primary_spot_id', None)}
         spotkeys.append(spotkey)
     for sk in spotkeys:
-        c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
+        c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
         spot = c.fetchone()
         sk['spot'] = {'id': spot.get('id', None),
                       'longitude': spot.get('longitude', None),
                       'latitude': spot.get('latitude', None),
                       'picture_url': spot.get('picture_url', None),
+                      'requires_navigation': spot.get('requires_navigation', None),
                       'details': spot.get('details', None)
                     }
     return spotkeys
@@ -59,6 +60,19 @@ def get_spotkeys(user_id, c):
 @app.route('/')
 def hi():
     return 'vielkom and bienvenue.'
+
+@app.route('/login')
+def login():
+
+    c = get_conn_cursor()
+
+    headers = request.headers
+    username = headers.get('username', None)
+    password = headers.get('password', None)
+
+    c.execute("SELECT id, username FROM users WHERE username=\'")
+
+
 
 @app.route('/add_user', methods=['POST'])
 def register_user():
