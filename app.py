@@ -71,8 +71,8 @@ def login():
     password = auth.get('password', None)
 
     c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
+    u = c.fetchone()
     try:
-        u = c.fetchone()
         if u:
             user = {}
             user['id'] = u.get('id', None)
