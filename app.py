@@ -97,7 +97,7 @@ def get_user(user_id):
                    'owner_id' : sk.get('owner_id', None),
                    'primary_spot_id': sk.get('primary_spot_id', None)}
         spotkeys.append(spotkey)
-    return 'adding spotkeys'
+
     for sk in spotkeys:
         c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
         spot = c.fetchone()
