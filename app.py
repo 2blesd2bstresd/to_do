@@ -107,7 +107,6 @@ def login():
         return(make_response(jsonify({'error': 'Incorrect Credentials'}), 401)
 
 
-
 @app.route('/add_user', methods=['POST'])
 def register_user():
 
