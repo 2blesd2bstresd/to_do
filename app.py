@@ -110,8 +110,10 @@ def get_user(user_id):
     user['last_name'] = u.get('last_name', None)
     user['profile_url'] = u.get('profile_url', None)
     user['username'] = u.get('username', None)
+    spotkeys = []
     for sk in get_spotkeys(user_id, c):
-        user['spotkeys'].append(sk)
+        spotkeys.append(sk)
+    user['spotkeys'] = spotkeys
 
     # get the users spotkeys
     # user['spotkeys'] = get_spotkeys(user_id)
