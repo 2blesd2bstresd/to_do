@@ -53,6 +53,7 @@ def get_spotkeys(user_id):
                       'picture_url': spot.get('picture_url', None),
                       'details': spot.get('details', None)
                       }
+    return spotkeys
 
 
 @app.route('/')
@@ -111,7 +112,6 @@ def get_user(user_id):
     user['username'] = u.get('username', None)
 
     # get the users spotkeys
-
     user['spotkeys'] = spotkeys
 
     # get the users contacts
