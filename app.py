@@ -65,7 +65,7 @@ def hi():
 def login():
 
     # c = get_conn_cursor()
-    print "AUTHORIZATION: ", dir(request.authorization)
+    print "AUTHORIZATION: ", request.authorization
     print "HEADERS: ", dir(request.headers)
     return 'try again'
 
