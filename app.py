@@ -71,24 +71,23 @@ def login():
     password = auth.get('password', None)
 
     c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
-    u = c.fetchone()
-    print u
-    if u:
-        user = {}
-        user['id'] = u.get('id', None)
-        user['first_name'] = u.get('first_name', None)
-        user['last_name'] = u.get('last_name', None)
-        user['profile_url'] = u.get('profile_url', None)
-        user['username'] = u.get('username', None)
-        spotkeys = []
-        for sk in get_spotkeys(user['id'], c):
-            spotkeys.append(sk)
-        user['spotkeys'] = spotkeys
-        # get the users spotkeys
-        # user['spotkeys'] = get_spotkeys(user_id)
+    try:
+        u = c.fetchone()
+        if u:
+            user = {}
+            user['id'] = u.get('id', None)
+            user['first_name'] = u.get('first_name', None)
+            user['last_name'] = u.get('last_name', None)
+            user['profile_url'] = u.get('profile_url', None)
+            user['username'] = u.get('username', None)
+            spotkeys = []
+            for sk in get_spotkeys(user['id'], c):
+                spotkeys.append(sk)
+            user['spotkeys'] = spotkeys
+            # get the users spotkeys
+            # user['spotkeys'] = get_spotkeys(user_id)
 
-        # get the users contacts
-        try:
+            # get the users contacts
             contacts = []
             c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user['id'])
             for con in c.fetchall():
@@ -97,14 +96,11 @@ def login():
                            'profile_url': con.get('profile_url', None)}
                 contacts.append(contact)
             user['contacts'] = contacts
-        except:
-            return 'adding contacts'
-        
-        return jsonify(user)
+            
+            return jsonify(user)
 
-    else:
+    except:
         return (make_response(jsonify({'error': 'Incorrect Credentials'}), 401))
-    return 'interesting'
 
 
 @app.route('/add_user', methods=['POST'])
