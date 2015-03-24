@@ -81,32 +81,30 @@ def login():
         user['profile_url'] = u.get('profile_url', None)
         user['username'] = u.get('username', None)
         spotkeys = []
-        for sk in get_spotkeys(user_id, c):
+        for sk in get_spotkeys(user['id'], c):
             spotkeys.append(sk)
         user['spotkeys'] = spotkeys
-    print 'USER: ', user
-    return 'interesting'
-    #     # get the users spotkeys
-    #     # user['spotkeys'] = get_spotkeys(user_id)
+        # get the users spotkeys
+        # user['spotkeys'] = get_spotkeys(user_id)
 
-    #     # get the users contacts
-    #     try:
-    #         contacts = []
-    #         c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user_id)
-    #         for con in c.fetchall():
-    #             contact = {'username': con.get('contact_username', None),
-    #                        'id': con.get('contact_id', None),
-    #                        'profile_url': con.get('profile_url', None)}
-    #             contacts.append(contact)
-    #         user['contacts'] = contacts
-    #     except:
-    #         return 'adding contacts'
+        # get the users contacts
+        try:
+            contacts = []
+            c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user_id)
+            for con in c.fetchall():
+                contact = {'username': con.get('contact_username', None),
+                           'id': con.get('contact_id', None),
+                           'profile_url': con.get('profile_url', None)}
+                contacts.append(contact)
+            user['contacts'] = contacts
+        except:
+            return 'adding contacts'
         
-    #     return jsonify(user)
+        return jsonify(user)
 
-    # else:
-    #     return (make_response(jsonify({'error': 'Incorrect Credentials'}), 401))
-    # return 'interesting'
+    else:
+        return (make_response(jsonify({'error': 'Incorrect Credentials'}), 401))
+    return 'interesting'
 
 
 @app.route('/add_user', methods=['POST'])
