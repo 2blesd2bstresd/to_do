@@ -13,9 +13,8 @@ import json
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
-
 app = Flask(__name__)
-# app.config.from_object('config')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yymrdbzqoowsqh:1bmpBpFOiKPLzweXcuX04FASwB@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b'
 # db = SQLAlchemy(app)
 # from models import User
 
@@ -131,6 +130,10 @@ def register_user():
         r.status_code = 400
         return r
     return jsonify ({'status_code': 200, 'date': datetime.now()})
+
+
+@app.route('/add_spotkey', methods=['POST'])
+def create_spotkey
 
 
 @app.route('/user/<int:user_id>', methods=['GET'])
