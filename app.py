@@ -38,7 +38,7 @@ def get_spotkeys(user_id):
     try:
         c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % user_id)
     except:
-        print 'broke query'
+        print 'broke query: ', user_id
         return []
     spotkeys = []
     try:
