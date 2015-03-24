@@ -72,7 +72,7 @@ def login():
 
     c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
     try:
-        u = c.fetchone()
+        u = c.fetchall()
         if u:
             user = {}
             user['id'] = u.get('id', None)
