@@ -69,9 +69,8 @@ def login():
     auth = request.authorization
     username = auth.get('username', None)
     password = auth.get('password', None)
-
-    c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
     try:
+        c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
         u = c.fetchall()
         if u:
             user = {}
@@ -100,7 +99,7 @@ def login():
             return jsonify(user)
 
     except:
-        return (make_response(jsonify({'error': 'Incorrect Credentials'}), 401))
+        return jsonify({'error': 'Incorrect Credentials'})
 
 
 @app.route('/add_user', methods=['POST'])
