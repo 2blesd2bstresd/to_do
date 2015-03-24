@@ -99,7 +99,7 @@ def login():
         
         return jsonify(user)
     else:
-        return jsonify({'error': 'Incorrect Credentials'})
+        return jsonify({'error': 'Incorrect Credentials', 'status_code': 401})
 
 
 @app.route('/add_user', methods=['POST'])
