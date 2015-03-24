@@ -143,7 +143,8 @@ def all_spotkeys(user_id):
 
     spotkeys = []
     for con_id in contacts:
-        spotkeys.append(get_spotkeys(con_id, c))
+        for sk in (get_spotkeys(con_id, c)):
+            spotkeys.append(sk)
     return jsonify({'spotkeys': spotkeys})
 
 
