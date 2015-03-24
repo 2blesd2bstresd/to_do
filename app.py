@@ -35,36 +35,23 @@ def get_conn_cursor():
 
 
 def get_spotkeys(user_id):
-    try:
-        c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % user_id)
-    except:
-        print 'broke query: ', user_id
-        return []
+    c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % str(user_id))
     spotkeys = []
-    try:
-        for sk in c.fetchall():
-            spotkey = {'name' : sk.get('name', None),
-                       'id' : sk.get('id', None),
-                       'owner_id' : sk.get('owner_id', None),
-                       'primary_spot_id': sk.get('primary_spot_id', None)}
-            spotkeys.append(spotkey)
-    except:
-        print 'broke spotkeys'
-        return []
-
-    try:
-        for sk in spotkeys:
-            c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
-            spot = c.fetchone()
-            sk['spot'] = {'id': spot.get('id', None),
-                          'longitude': spot.get('longitude', None),
-                          'latitude': spot.get('latitude', None),
-                          'picture_url': spot.get('picture_url', None),
-                          'details': spot.get('details', None)
-                        }
-    except:
-        print 'broke spots'
-        return []
+    for sk in c.fetchall():
+        spotkey = {'name' : sk.get('name', None),
+                   'id' : sk.get('id', None),
+                   'owner_id' : sk.get('owner_id', None),
+                   'primary_spot_id': sk.get('primary_spot_id', None)}
+        spotkeys.append(spotkey)
+    for sk in spotkeys:
+        c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
+        spot = c.fetchone()
+        sk['spot'] = {'id': spot.get('id', None),
+                      'longitude': spot.get('longitude', None),
+                      'latitude': spot.get('latitude', None),
+                      'picture_url': spot.get('picture_url', None),
+                      'details': spot.get('details', None)
+                    }
     return spotkeys
 
 
