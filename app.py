@@ -110,7 +110,6 @@ def get_user(user_id):
     user['last_name'] = u.get('last_name', None)
     user['profile_url'] = u.get('profile_url', None)
     user['username'] = u.get('username', None)
-
     user['spotkeys'] = get_spotkeys(user_id, c)
 
     # get the users spotkeys
@@ -144,23 +143,7 @@ def all_spotkeys(user_id):
 
     spotkeys = []
     for con_id in contacts:
-        c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % con_id)
-
-        for sk in c.fetchall():
-            spotkey = {'name' : sk.get('name', None),
-                       'id' : sk.get('id', None),
-                       'owner_id' : sk.get('owner_id', None),
-                       'primary_spot_id': sk.get('primary_spot_id')}
-            spotkeys.append(spotkey)
-        for sk in spotkeys:
-            c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
-            spot = c.fetchone()
-            sk['spot'] = {'id': spot.get('id', None),
-                          'longitude': spot.get('longitude', None),
-                          'latitude': spot.get('latitude', None),
-                          'picture_url': spot.get('picture_url', None),
-                          'details': spot.get('details', None)
-                      }
+        spotkeys.append(get_spotkeys(con_id, c))
     return jsonify({'spotkeys': spotkeys})
 
 
