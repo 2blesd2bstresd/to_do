@@ -90,7 +90,7 @@ def login():
         # get the users contacts
         try:
             contacts = []
-            c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user_id)
+            c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user['id'])
             for con in c.fetchall():
                 contact = {'username': con.get('contact_username', None),
                            'id': con.get('contact_id', None),
