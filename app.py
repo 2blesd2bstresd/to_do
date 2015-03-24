@@ -34,25 +34,8 @@ def get_conn_cursor():
     return c
 
 
-def get_spotkeys(user_id):
-    c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % int(user_id))
-    spotkeys = []
-    for sk in c.fetchall():
-        spotkey = {'name' : sk.get('name', None),
-                   'id' : sk.get('id', None),
-                   'owner_id' : sk.get('owner_id', None),
-                   'primary_spot_id': sk.get('primary_spot_id', None)}
-        spotkeys.append(spotkey)
-    for sk in spotkeys:
-        c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
-        spot = c.fetchone()
-        sk['spot'] = {'id': spot.get('id', None),
-                      'longitude': spot.get('longitude', None),
-                      'latitude': spot.get('latitude', None),
-                      'picture_url': spot.get('picture_url', None),
-                      'details': spot.get('details', None)
-                    }
-    return spotkeys
+# def get_spotkeys(user_id):
+
 
 
 @app.route('/')
@@ -110,8 +93,27 @@ def get_user(user_id):
     user['profile_url'] = u.get('profile_url', None)
     user['username'] = u.get('username', None)
 
+    c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % int(user_id))
+    spotkeys = []
+    for sk in c.fetchall():
+        spotkey = {'name' : sk.get('name', None),
+                   'id' : sk.get('id', None),
+                   'owner_id' : sk.get('owner_id', None),
+                   'primary_spot_id': sk.get('primary_spot_id', None)}
+        spotkeys.append(spotkey)
+    for sk in spotkeys:
+        c.execute("SELECT id, longitude, latitude, picture_url, details FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
+        spot = c.fetchone()
+        sk['spot'] = {'id': spot.get('id', None),
+                      'longitude': spot.get('longitude', None),
+                      'latitude': spot.get('latitude', None),
+                      'picture_url': spot.get('picture_url', None),
+                      'details': spot.get('details', None)
+                    }
+    user['spotkeys'] = spotkeys
+
     # get the users spotkeys
-    user['spotkeys'] = get_spotkeys(user_id)
+    # user['spotkeys'] = get_spotkeys(user_id)
 
     # get the users contacts
     try:
