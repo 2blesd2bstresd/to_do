@@ -35,7 +35,7 @@ def get_conn_cursor():
 
 
 def get_spotkeys(user_id):
-    c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % str(user_id))
+    c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % int(user_id))
     spotkeys = []
     for sk in c.fetchall():
         spotkey = {'name' : sk.get('name', None),
