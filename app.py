@@ -127,6 +127,10 @@ def login():
 @app.route('/add_user', methods=['POST'])
 def register_user():
 
+    print 'FORM: ', request.form
+    print 'FORM ARGS: ', dir(request.form)
+
+
     form = request.form
 
     first_name = form.get('first_name', None)
