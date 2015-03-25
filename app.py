@@ -156,10 +156,10 @@ def register_user():
         r = jsonify({'Error': e})
         r.status_code = 400
         return r
-    return jsonify ({'status_code': 200, 'date': datetime.now()})
+    return jsonify ({'status_code': 200, 'date': datetime.now(), 'data', form.to_dict})
 
 
-@app.route('/add_spotkey', methods=['POST'])
+@app.route('/create_spotkey', methods=['POST'])
 def create_spotkey():
     
     form = request.form
@@ -167,8 +167,19 @@ def create_spotkey():
     name = form.get('name', None)
     share_with_all = form.get('share_with_all', False)
     location_type = form.get('location_type', None)
+    street_address = form.get('street_address', None)
+    city = form.get('city', None)
+    state = form.get('state', None)
+    zipcode = form.get('zipcode', None)
+    transport_type = form.get('transport_type', None)
+    buzzer_code = form.get('buzzer_code')
+    requires_navigation = form.get('requires_navigation', None)
+    latitude = form.get('latitude', None)
+    longitude = form.get('longitude', None)
+    door_number = form.get('door_number', None)
+    details = form.get('details', None)
 
-    return jsonify({'status_code':200, 'date':datetime.now()})
+    return jsonify({'status_code':200, 'date':datetime.now(), 'data': form.to_dict})
 
 
 
