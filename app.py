@@ -63,7 +63,11 @@ def hi():
 @app.route('/test/<string:value>', methods=['GET'])
 def test(value):
     print db
-    return 'MONEY'
+    try:
+        from models import Test
+    except ImportError as e: 
+        print 'IMPORT ERROR: ', e
+        return 'MONEY'
 
 @app.route('/login', methods=['POST'])
 def login():
