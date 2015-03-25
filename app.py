@@ -252,7 +252,7 @@ def get_spotkey(spotkey_id):
 @app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])
 def get_spot(spotkey_id, transport_type):
     c = get_conn_cursor()
-    c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type=\'{1}\' ORDER BY priority ASC".format(spotkey_id, transport_type))        
+    c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type=\'{1}\' ORDER BY priority DESC".format(spotkey_id, transport_type))        
     spots=c.fetchall()
 
     if not spots:
