@@ -179,7 +179,7 @@ def create_spotkey():
     door_number = form.get('door_number', None)
     details = form.get('details', None)
 
-    return jsonify({'status_code':200, 'date':datetime.now(), 'data': form.to_dict})
+    return jsonify({'status_code':200, 'date':datetime.now(), 'data': form.to_dict()})
 
 
 
