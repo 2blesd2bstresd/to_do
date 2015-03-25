@@ -96,7 +96,7 @@ def login():
     password = auth.get('password', None)
     # c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
     u = db.session.query(User).filter_by(username=username).filter_by(password=password)
-    print u
+    print 'HERES THE USER: ', u
     if u:
         u = u[0]
         user = {}
