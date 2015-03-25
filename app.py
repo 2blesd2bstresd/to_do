@@ -94,7 +94,9 @@ def login():
     auth = request.authorization
     username = auth.get('username', None)
     password = auth.get('password', None)
-    c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
+    # c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
+    u = db.session.query(User).filter_by(username=username).filter_by(password=password)
+
     u = c.fetchall()
     print u
     if u:
