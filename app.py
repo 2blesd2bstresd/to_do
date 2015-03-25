@@ -63,9 +63,9 @@ def hi():
 @app.route('/test/<string:value>', methods=['GET'])
 def test(value):
     from models import Test
-    test = Test(value)
-    db.session.add(value)
-    db.session.commit()
+    # test = Test(value)
+    # db.session.add(value)
+    # db.session.commit()
 
 @app.route('/login', methods=['POST'])
 def login():
