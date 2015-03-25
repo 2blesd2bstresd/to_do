@@ -97,23 +97,20 @@ def login():
     auth = request.authorization
     username = auth.get('username', None)
     password = auth.get('password', None)
-    # c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
     u = User.query.filter_by(username=username).filter_by(password=password).first()
-    print 'HERES THE USER: ', u
     if u:
-        u = u[0]
         user = {}
         user['id'] = u.id
         user['first_name'] = u.first_name
         user['last_name'] = u.last_name
         user['profile_url'] = u.profile_url
         user['username'] = u.username
+
+        # Get users spotkeys
         spotkeys = []
         for sk in get_spotkeys(user['id'], c):
             spotkeys.append(sk)
         user['spotkeys'] = spotkeys
-        # get the users spotkeys
-        # user['spotkeys'] = get_spotkeys(user_id)
 
         # get the users contacts
         contacts = []
