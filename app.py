@@ -8,7 +8,7 @@ from flask import Flask, jsonify, abort, request, session, Response
 from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
-from models import Test
+
 
 
 urlparse.uses_netloc.append("postgres")
@@ -17,6 +17,7 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yymrdbzqoowsqh:1bmpBpFOiKPLzweXcuX04FASwB@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b'
 db = SQLAlchemy(app)
+from models import Test
 
 # from models import User
 
