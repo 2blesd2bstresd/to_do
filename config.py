@@ -2,7 +2,7 @@
 import os
 # grabs the folder where the script runs
 basedir = os.path.abspath(os.path.dirname(__file__))
-DATABASE = 'ec2-23-21-183-70.compute-1.amazonaws.com' 
+DATABASE = 'd7p0rp7lvl3e7b' 
 USERNAME = 'yymrdbzqoowsqh' 
 PASSWORD = '1bmpBpFOiKPLzweXcuX04FASwB' 
 CSRF_ENABLED = True 
