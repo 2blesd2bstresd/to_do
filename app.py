@@ -8,6 +8,7 @@ from flask import Flask, jsonify, abort, request, session, Response
 from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import datetime
 import json
+from models import Test
 
 
 urlparse.uses_netloc.append("postgres")
