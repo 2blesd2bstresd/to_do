@@ -66,7 +66,7 @@ def get_spotkeys(user_id, c):
                    'primary_spot_id': sk.get('primary_spot_id', None)}
         spotkeys.append(spotkey)
     for sk in spotkeys:
-        c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s ORDER BY priority DESC" % sk.get('primary_spot_id', None))
+        c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
         spot = c.fetchone()
         sk['spot'] = {'id': spot.get('id', None),
                       'longitude': spot.get('longitude', None),
@@ -95,36 +95,37 @@ def login():
     username = auth.get('username', None)
     password = auth.get('password', None)
     # c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
-    u = db.session.query(User).filter_by(username=username).filter_by(password=password)
+    u = User.query.filter_by(username=username).filter_by(password=password).first()
     print 'HERES THE USER: ', u
-    if u:
-        u = u[0]
-        user = {}
-        user['id'] = u.get('id', None)
-        user['first_name'] = u.get('first_name', None)
-        user['last_name'] = u.get('last_name', None)
-        user['profile_url'] = u.get('profile_url', None)
-        user['username'] = u.get('username', None)
-        spotkeys = []
-        for sk in get_spotkeys(user['id'], c):
-            spotkeys.append(sk)
-        user['spotkeys'] = spotkeys
-        # get the users spotkeys
-        # user['spotkeys'] = get_spotkeys(user_id)
+    # if u:
+    #     u = u[0]
+    #     user = {}
+    #     user['id'] = u.get('id', None)
+    #     user['first_name'] = u.get('first_name', None)
+    #     user['last_name'] = u.get('last_name', None)
+    #     user['profile_url'] = u.get('profile_url', None)
+    #     user['username'] = u.get('username', None)
+    #     spotkeys = []
+    #     for sk in get_spotkeys(user['id'], c):
+    #         spotkeys.append(sk)
+    #     user['spotkeys'] = spotkeys
+    #     # get the users spotkeys
+    #     # user['spotkeys'] = get_spotkeys(user_id)
 
-        # get the users contacts
-        contacts = []
-        c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user['id'])
-        for con in c.fetchall():
-            contact = {'username': con.get('contact_username', None),
-                       'id': con.get('contact_id', None),
-                       'profile_url': con.get('profile_url', None)}
-            contacts.append(contact)
-        user['contacts'] = contacts
+    #     # get the users contacts
+    #     contacts = []
+    #     c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user['id'])
+    #     for con in c.fetchall():
+    #         contact = {'username': con.get('contact_username', None),
+    #                    'id': con.get('contact_id', None),
+    #                    'profile_url': con.get('profile_url', None)}
+    #         contacts.append(contact)
+    #     user['contacts'] = contacts
         
-        return jsonify(user)
-    else:
-        return abort(401)
+    #     return jsonify(user)
+    # else:
+    #     return abort(401)
+    return 'GRAVY'
 
 
 @app.route('/add_user', methods=['POST'])
@@ -251,7 +252,7 @@ def get_spotkey(spotkey_id):
 @app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])
 def get_spot(spotkey_id, transport_type):
     c = get_conn_cursor()
-    c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type=\'{1}\' ORDER BY priority".format(spotkey_id, transport_type))        
+    c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type=\'{1}\' ORDER BY priority ASC".format(spotkey_id, transport_type))        
     spots=c.fetchall()
 
     if not spots:
