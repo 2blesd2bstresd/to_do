@@ -156,7 +156,7 @@ def register_user():
         r = jsonify({'Error': e})
         r.status_code = 400
         return r
-    return jsonify ({'status_code': 200, 'date': datetime.now(), 'data', form.to_dict})
+    return jsonify ({'status_code': 200, 'date': datetime.now(), 'data': form.to_dict})
 
 
 @app.route('/create_spotkey', methods=['POST'])
