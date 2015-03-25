@@ -12,7 +12,7 @@ import json
 
 
 urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse('d7p0rp7lvl3e7b')
+url = urlparse.urlparse('/yymrdbzqoowsqh:1bmpBpFOiKPLzweXcuX04FASwB@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b')
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -94,7 +94,7 @@ def login():
     auth = request.authorization
     username = auth.get('username', None)
     password = auth.get('password', None)
-    c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
+    # c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE username=\'{0}\' AND password=\'{1}\'".format(username, password))
     # u = c.fetchall()
     # print u
     # if u:
