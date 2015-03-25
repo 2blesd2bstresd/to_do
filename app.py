@@ -66,7 +66,7 @@ def get_spotkeys(user_id, c):
                    'primary_spot_id': sk.get('primary_spot_id', None)}
         spotkeys.append(spotkey)
     for sk in spotkeys:
-        c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
+        c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s ORDER BY priority DESC" % sk.get('primary_spot_id', None))
         spot = c.fetchone()
         sk['spot'] = {'id': spot.get('id', None),
                       'longitude': spot.get('longitude', None),
