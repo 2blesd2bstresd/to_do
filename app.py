@@ -138,7 +138,7 @@ def register_user():
 
 
 @app.route('/add_spotkey', methods=['POST'])
-def create_spotkey
+def create_spotkey():
     
     form = request.form
 
