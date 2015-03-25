@@ -65,8 +65,8 @@ def test(value):
     print db
     try:
         from models import Test
-    except ImportError, e:
-        print 'ERROR: ', e 
+        return 'NO MONEY'
+    except:
         return 'MONEY'
 
 @app.route('/login', methods=['POST'])
