@@ -137,8 +137,17 @@ def register_user():
     return jsonify ({'status_code': 200, 'date': datetime.now()})
 
 
-# @app.route('/add_spotkey', methods=['POST'])
-# def create_spotkey
+@app.route('/add_spotkey', methods=['POST'])
+def create_spotkey
+    
+    form = request.form
+
+    name = form.get('name', None)
+    share_with_all = form.get('share_with_all', False)
+    location_type = form.get('location_type', None)
+
+    return jsonify({'status_code':200, 'date':datetime.now()})
+
 
 
 @app.route('/user/<int:user_id>', methods=['GET'])
