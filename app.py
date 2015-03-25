@@ -63,6 +63,7 @@ def hi():
 
 @app.route('/test/<string:value>', methods=['GET'])
 def test(value):
+    task = models.Task(value)
     return 'NO MONEY'
 
 @app.route('/login', methods=['POST'])
