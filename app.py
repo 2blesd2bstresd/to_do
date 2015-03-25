@@ -15,8 +15,8 @@ urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse('d7p0rp7lvl3e7b')
 
 app = Flask(__name__)
-app.config.from_object(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yymrdbzqoowsqh:1bmpBpFOiKPLzweXcuX04FASwB@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b'
+app.config.from_object('config')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yymrdbzqoowsqh:1bmpBpFOiKPLzweXcuX04FASwB@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b'
 db = SQLAlchemy(app)
 # from models import Test
 
