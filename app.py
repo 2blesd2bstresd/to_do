@@ -61,7 +61,7 @@ def get_spotkeys(user_id, c):
 def hi():
     return 'vielkom and bienvenue.'
 
-@app.route('/test/<string:value>', methods =['GET']):
+@app.route('/test/<string:value>', methods=['GET'])
 def test(value):
     test = Test(value)
     db.session.add(value)
