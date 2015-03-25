@@ -17,16 +17,13 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yymrdbzqoowsqh:1bmpBpFOiKPLzweXcuX04FASwB@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b'
 db = SQLAlchemy(app)
-from models import Test
-
-# from models import User
 
 
 def get_conn_cursor():
 
     conn = psycopg2.connect(
         database=url.path[1:],
-        user='yymrdbzqoowsqh',
+        user='yymrdbzqoowsqh',  
         password='1bmpBpFOiKPLzweXcuX04FASwB',
         host=url.hostname,
         port=url.port
@@ -65,6 +62,7 @@ def hi():
 
 @app.route('/test/<string:value>', methods=['GET'])
 def test(value):
+    from models import Test
     test = Test(value)
     db.session.add(value)
     db.session.commit()
