@@ -17,7 +17,7 @@ url = urlparse.urlparse('d7p0rp7lvl3e7b')
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yymrdbzqoowsqh:1bmpBpFOiKPLzweXcuX04FASwB@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b'
 db = SQLAlchemy(app)
-from models import Test
+# from models import Test
 
 
 def get_conn_cursor():
@@ -61,9 +61,9 @@ def get_spotkeys(user_id, c):
 def hi():
     return 'vielkom and bienvenue.'
 
-@app.route('/test/<string:value>', methods=['GET'])
-def test(value):
-    return 'NO MONEY'
+# @app.route('/test/<string:value>', methods=['GET'])
+# def test(value):
+#     return 'NO MONEY'
 
 @app.route('/login', methods=['POST'])
 def login():
