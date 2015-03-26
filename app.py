@@ -236,20 +236,22 @@ def create_spotkey():
     db.session.add(sk)
     db.session.commit()
 
+    try:
+        s = Spot(sk.id, 1, transport_type, requires_navigation, 
+                     latitude, longitude, street_address, 
+                     city, state, zipcode, buzzer_code, door_number, 
+                     details, cross_street)
 
-    s = Spot(sk.id, 1, transport_type, requires_navigation, 
-                 latitude, longitude, street_address, 
-                 city, state, zipcode, buzzer_code, door_number, 
-                 details, cross_street)
+        db.session.add(s)
+        db.session.commit()
 
-    db.session.add(s)
-    db.session.commit()
+        sk.primary_spot_id = s.id
+        db.session.add(sk)
+        db.sessio.commit()
+    except:
+        pass
 
-    sk.primary_spot_id = s.id
-    db.session.add(sk)
-    db.sessio.commit()
-
-    return jsonify({'status_code':200, 'date':datetime.now()})
+    return jsonify({'status_code':200, 'date':datetime.now(), 'id': sk.id})
 
 
 
