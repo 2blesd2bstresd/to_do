@@ -108,6 +108,9 @@ class Spot(db.Model):
         self.details = details
         self.cross_street = cross_street
 
+    def __repr__(self):
+        return '<Spot %r>' % self.id
+
 
 def get_conn_cursor():
 
