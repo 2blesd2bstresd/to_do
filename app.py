@@ -242,7 +242,7 @@ def create_spotkey():
     # print s.to_dict()
 
     db.session.add(s)
-    # db.session.commit()
+    db.session.commit()
 
     # sk.primary_spot_id = s.id
     # db.session.add(sk)
@@ -250,7 +250,7 @@ def create_spotkey():
 
 
 
-    return jsonify({'status_code':200, 'date':datetime.now(), 'spotkey_id': sk.id, 'spot': s.to_dict()})
+    return jsonify({'status_code':200, 'date':datetime.now(), 'spotkey_id': sk.id})
 
 
 
