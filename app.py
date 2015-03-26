@@ -231,18 +231,15 @@ def create_spotkey():
     cross_street = form.get('cross_street', None)
 
     sk = Spotkey(2, name, datetime.now(), location_type, share_with_all)
-    db.session.add(sk)
-    db.session.commit()
 
-    s = Spot(sk.id, 1, transport_type, requires_navigation, 
+
+    s = Spot(50, 1, transport_type, requires_navigation, 
                  latitude, longitude, location_type, street_address, 
                  city, state, zipcode, buzzer_code, door_number, 
                  details, cross_street)
 
-    # print s.to_dict()
-
+    db.session.add(sk)
     db.session.add(s)
-    db.session.commit()
 
     # sk.primary_spot_id = s.id
     # db.session.add(sk)
@@ -250,7 +247,7 @@ def create_spotkey():
 
 
 
-    return jsonify({'status_code':200, 'date':datetime.now(), 'spotkey_id': sk.id})
+    return jsonify({'status_code':200, 'date':datetime.now()})
 
 
 
