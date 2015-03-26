@@ -41,6 +41,74 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' & self.username
 
+
+class Spotkey(db.Model):
+
+    __tablename__ = "spotkeys"
+
+    id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer)
+    location_type = db.Column(db.String)
+    primary_spot_id = db.Column(db.Integer)
+    name = db.Column(db.String)
+    create_date = db.Column(db.String, nullable=False)
+    share_with_all = db.Column(db.Boolean)
+
+    def __init__(self, owner_id, name, create_date, location_type=None, share_with_all=False, primary_spot_id=None):
+
+        self.owner_id = owner_id
+        self.name = name
+        self.create_date = create_date
+        self.primary_spot_id = primary_spot_id
+        self.location_type = location_type
+        self.share_with_all = share_with_all
+
+    def __repr__(self):
+        return '<Spotkey %r>' % self.name
+
+class Spot(db.Model):
+
+    __tablename__ = "spots"
+
+    id = db.Column(db.Integer, primary_key=True)
+    spotkey_id = db.Column(db.Integer, nullable=False)
+    priority = db.Column(db.Integer, nullable=False) 
+    location_type = db.Column(db.String)
+    street_address = db.Column(db.String)
+    city = db.Column(db.String)
+    state = db.Column(db.String)
+    zipcode = db.Column(db.String)
+    transport_type = db.Column(db.String)
+    buzzer_code = db.Column(db.String)
+    requires_navigation = db.Column(db.Boolean)
+    latitude = db.Column(db.Integer)
+    longitude = db.Column(db.Integer)
+    door_number = db.Column(db.Integer)
+    details = db.Column(db.String)
+    cross_street = db.Column(db.String)
+
+    def __init__(self, spotkey_id, priority, transport_type='Any', requires_navigation=False, \
+                 latitude=None, longitude=None, location_type=None, street_address=None, \
+                 city=None, state=None, zipcode=None, buzzer_code=None, door_number=None \
+                 details=None, cross_street=None):
+
+        self.spotkey_id = spotkey_id
+        self.priority = priority
+        self.transport_type = transport_type
+        self.requires_navigation = requires_navigation
+        self.latitude = latitude
+        self.longitude = longitude
+        self.location_type = location_type
+        self.street_address = street_address
+        self.city = city
+        self.state = state
+        self.zipcode = zipcode
+        self.buzzer_code = buzzer_code
+        self.door_number = door_number
+        self.details = details
+        self.cross_street = cross_street
+
+
 def get_conn_cursor():
 
     conn = psycopg2.connect(
@@ -127,8 +195,8 @@ def login():
 @app.route('/add_user', methods=['POST'])
 def register_user():
 
-    print 'FORM: ', request.form
-    print 'FORM ARGS: ', dir(request.form)
+    # print 'FORM: ', request.form
+    # print 'FORM ARGS: ', dir(request.form)
 
 
     form = request.form
@@ -139,23 +207,27 @@ def register_user():
     username = form.get('username', None)
     password = form.get('password', None)
 
-    c = get_conn_cursor()
-    try:
-        query = str("""INSERT INTO users (first_name, 
-                                        last_name, 
-                                         email, 
-                                         username, 
-                                         password) 
-                       VALUES (\'{0}\', 
-                               \'{1}\', 
-                               \'{2}\', 
-                               \'{3}\', 
-                               \'{4}\')""".format(first_name, last_name, email, username, password))
-        c.execute(query)
-    except psycopg2.Error as e:
-        r = jsonify({'Error': e})
-        r.status_code = 400
-        return r
+    u = User(username, password, first_name, last_name, email)
+    db.session.add(u)
+    db.session.commit()
+
+    # c = get_conn_cursor()
+    # try:
+    #     query = str("""INSERT INTO users (first_name, 
+    #                                     last_name, 
+    #                                      email, 
+    #                                      username, 
+    #                                      password) 
+    #                    VALUES (\'{0}\', 
+    #                            \'{1}\', 
+    #                            \'{2}\', 
+    #                            \'{3}\', 
+    #                            \'{4}\')""".format(first_name, last_name, email, username, password))
+    #     c.execute(query)
+    # except psycopg2.Error as e:
+    #     r = jsonify({'Error': e})
+    #     r.status_code = 400
+    #     return r
     return jsonify ({'status_code': 200, 'date': datetime.now(), 'data': form.to_dict()})
 
 
@@ -178,6 +250,13 @@ def create_spotkey():
     longitude = form.get('longitude', None)
     door_number = form.get('door_number', None)
     details = form.get('details', None)
+    cross_street = form.get('cross_street', None)
+
+    s = Spotkey(2, name, datetime.now(), location_type, share_with_all)
+    db.session.add(s)
+    db.session.commit()
+
+
 
     return jsonify({'status_code':200, 'date':datetime.now(), 'data': form.to_dict()})
 
@@ -237,9 +316,9 @@ def all_spotkeys(user_id):
     contacts.append(user_id)
 
     spotkeys = []
-    for con_id in contacts:
-        for sk in (get_spotkeys(con_id, c)):
-            spotkeys.append(sk)
+    # for con_id in contacts:
+    #     for sk in (get_spotkeys(con_id, c)):
+    #         spotkeys.append(sk)
     return jsonify({'spotkeys': spotkeys})
 
 
