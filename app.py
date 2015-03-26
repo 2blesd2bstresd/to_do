@@ -236,17 +236,18 @@ def create_spotkey():
     sk = Spotkey(2, name, datetime.now(), location_type, share_with_all)
 
 
-    s = Spot(50, 1, transport_type, requires_navigation, 
-                 latitude, longitude, location_type, street_address, 
-                 city, state, zipcode, buzzer_code, door_number, 
-                 details, cross_street)
+    s = Spot(50, 1) 
+                # transport_type, requires_navigation, 
+                #  latitude, longitude, location_type, street_address, 
+                #  city, state, zipcode, buzzer_code, door_number, 
+                #  details, cross_street)
 
     db.session.add(sk)
     db.session.add(s)
 
     # sk.primary_spot_id = s.id
     # db.session.add(sk)
-    # db.session.commit()
+    db.session.commit()
 
 
 
