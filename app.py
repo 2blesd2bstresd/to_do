@@ -150,10 +150,6 @@ def get_spotkeys(user_id, c):
 def hi():
     return 'vielkom and bienvenue.'
 
-# @app.route('/test/<string:value>', methods=['GET'])
-# def test(value):
-#     return 'NO MONEY'
-
 @app.route('/login', methods=['POST'])
 def login():
 
@@ -195,10 +191,6 @@ def login():
 @app.route('/add_user', methods=['POST'])
 def register_user():
 
-    # print 'FORM: ', request.form
-    # print 'FORM ARGS: ', dir(request.form)
-
-
     form = request.form
 
     first_name = form.get('first_name', None)
@@ -211,23 +203,6 @@ def register_user():
     db.session.add(u)
     db.session.commit()
 
-    # c = get_conn_cursor()
-    # try:
-    #     query = str("""INSERT INTO users (first_name, 
-    #                                     last_name, 
-    #                                      email, 
-    #                                      username, 
-    #                                      password) 
-    #                    VALUES (\'{0}\', 
-    #                            \'{1}\', 
-    #                            \'{2}\', 
-    #                            \'{3}\', 
-    #                            \'{4}\')""".format(first_name, last_name, email, username, password))
-    #     c.execute(query)
-    # except psycopg2.Error as e:
-    #     r = jsonify({'Error': e})
-    #     r.status_code = 400
-    #     return r
     return jsonify ({'status_code': 200, 'date': datetime.now(), 'data': form.to_dict()})
 
 
@@ -252,11 +227,21 @@ def create_spotkey():
     details = form.get('details', None)
     cross_street = form.get('cross_street', None)
 
-    s = Spotkey(2, name, datetime.now(), location_type, share_with_all)
+    sk = Spotkey(2, name, datetime.now(), location_type, share_with_all)
+    db.session.add(sk)
+    db.session.commit()
+
+    s = Spot(sk.id, priority, transport_type, requires_navigation, \
+                 latitude, longitude, location_type, street_address, \
+                 city, state, zipcode, buzzer_code, door_number, \
+                 details, cross_street)
+
     db.session.add(s)
     db.session.commit()
 
-
+    sk.primary_spot_id = s.id
+    db.session.add(sk)
+    db.session.commit()
 
     return jsonify({'status_code':200, 'date':datetime.now(), 'data': form.to_dict()})
 
