@@ -231,10 +231,10 @@ def create_spotkey():
     db.session.add(sk)
     db.session.commit()
 
-    # s = Spot(sk.id, priority, transport_type, requires_navigation, \
-    #              latitude, longitude, location_type, street_address, \
-    #              city, state, zipcode, buzzer_code, door_number, \
-    #              details, cross_street)
+    s = Spot(sk.id, priority, transport_type, requires_navigation, 
+                 latitude, longitude, location_type, street_address, 
+                 city, state, zipcode, buzzer_code, door_number, 
+                 details, cross_street)
 
     # db.session.add(s)
     # db.session.commit()
