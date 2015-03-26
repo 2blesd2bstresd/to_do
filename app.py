@@ -247,7 +247,7 @@ def create_spotkey():
 
 
 
-    return jsonify({'status_code':200, 'date':datetime.now(), 'spotkey_id': sk.id})
+    return jsonify({'status_code':200, 'date':datetime.now(), 'spotkey_id': sk.id, 'spot': s.to_dict()})
 
 
 
