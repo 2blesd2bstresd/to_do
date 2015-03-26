@@ -236,7 +236,7 @@ def create_spotkey():
                  city, state, zipcode, buzzer_code, door_number, 
                  details, cross_street)
 
-    print s.to_dict()
+    # print s.to_dict()
 
     # db.session.add(s)
     # db.session.commit()
