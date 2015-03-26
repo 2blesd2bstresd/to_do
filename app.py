@@ -6,6 +6,7 @@ from psycopg2.extras import RealDictCursor
 import urlparse
 from flask import Flask, jsonify, abort, request, session, Response
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy import exc
 from datetime import datetime
 import json
 
@@ -240,8 +241,10 @@ def create_spotkey():
 
     db.session.add(sk)
     db.session.add(s)
-    db.session.commit()
-
+    try:
+        db.session.commit()
+    except exc.IntegrityError, exc:
+        print exc
     # sk.primary_spot_id = s.id
     # db.session.add(sk)
     # db.session.commit()
