@@ -89,7 +89,7 @@ class Spot(db.Model):
 
     def __init__(self, spotkey_id, priority, transport_type='Any', requires_navigation=False, \
                  latitude=None, longitude=None, location_type=None, street_address=None, \
-                 city=None, state=None, zipcode=None, buzzer_code=None, door_number=None \
+                 city=None, state=None, zipcode=None, buzzer_code=None, door_number=None, \
                  details=None, cross_street=None):
 
         self.spotkey_id = spotkey_id
