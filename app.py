@@ -74,7 +74,6 @@ class Spot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     spotkey_id = db.Column(db.Integer, nullable=False)
     priority = db.Column(db.Integer, nullable=False) 
-    location_type = db.Column(db.String)
     street_address = db.Column(db.String)
     city = db.Column(db.String)
     state = db.Column(db.String)
@@ -89,7 +88,7 @@ class Spot(db.Model):
     cross_street = db.Column(db.String)
 
     def __init__(self, spotkey_id, priority, transport_type='Any', requires_navigation=False, 
-                 latitude=None, longitude=None, location_type=None, street_address=None, 
+                 latitude=None, longitude=None, street_address=None, 
                  city=None, state=None, zipcode=None, buzzer_code=None, door_number=None, 
                  details=None, cross_street=None):
 
@@ -99,7 +98,6 @@ class Spot(db.Model):
         self.requires_navigation = requires_navigation
         self.latitude = latitude
         self.longitude = longitude
-        self.location_type = location_type
         self.street_address = street_address
         self.city = city
         self.state = state
@@ -235,19 +233,22 @@ def create_spotkey():
 
     sk = Spotkey(2, name, datetime.now(), location_type, share_with_all)
 
-
-    s = Spot(50, 1) 
-                # transport_type, requires_navigation, 
-                #  latitude, longitude, location_type, street_address, 
-                #  city, state, zipcode, buzzer_code, door_number, 
-                #  details, cross_street)
-
     db.session.add(sk)
-    db.session.add(s)
-
-    # sk.primary_spot_id = s.id
-    # db.session.add(sk)
     db.session.commit()
+
+
+    s = Spot(sk.id, 1, transport_type, requires_navigation, 
+                 latitude, longitude, location_type, street_address, 
+                 city, state, zipcode, buzzer_code, door_number, 
+                 details, cross_street)
+
+
+    db.session.add(s)
+    db.session.commit()
+
+    sk.primary_spot_id = s.id
+    db.session.add(sk)
+    db.sessio.commit()
 
 
 
