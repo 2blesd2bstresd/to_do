@@ -239,7 +239,10 @@ def create_spotkey():
     # print s.to_dict()
 
     db.session.add(s)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError, e:
+        print e
 
 
     # sk.primary_spot_id = s.id
