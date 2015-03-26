@@ -231,7 +231,7 @@ def create_spotkey():
     db.session.add(sk)
     db.session.commit()
 
-    s = Spot(sk.id, 1, transport_type, requires_navigation, 
+    s = Spot(50, 1, transport_type, requires_navigation, 
                  latitude, longitude, location_type, street_address, 
                  city, state, zipcode, buzzer_code, door_number, 
                  details, cross_street)
@@ -239,11 +239,7 @@ def create_spotkey():
     # print s.to_dict()
 
     db.session.add(s)
-    try:
-        db.session.commit()
-    except SQLAlchemyError, e:
-        print e
-
+    db.session.commit()
 
     # sk.primary_spot_id = s.id
     # db.session.add(sk)
