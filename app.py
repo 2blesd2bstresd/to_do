@@ -133,16 +133,16 @@ def get_spotkeys(user_id, c):
                    'owner_id' : sk.get('owner_id', None),
                    'primary_spot_id': sk.get('primary_spot_id', None)}
         spotkeys.append(spotkey)
-    # for sk in spotkeys:
-    #     c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
-    #     spot = c.fetchone()
-    #     sk['spot'] = {'id': spot.get('id', None),
-    #                   'longitude': spot.get('longitude', None),
-    #                   'latitude': spot.get('latitude', None),
-    #                   'picture_url': spot.get('picture_url', None),
-    #                   'requires_navigation': spot.get('requires_navigation', None),
-    #                   'details': spot.get('details', None)
-    #                 }
+    for sk in spotkeys:
+        c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
+        spot = c.fetchone()
+        sk['spot'] = {'id': spot.get('id', None),
+                      'longitude': spot.get('longitude', None),
+                      'latitude': spot.get('latitude', None),
+                      'picture_url': spot.get('picture_url', None),
+                      'requires_navigation': spot.get('requires_navigation', None),
+                      'details': spot.get('details', None)
+                    }
     return spotkeys
 
 
