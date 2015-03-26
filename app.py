@@ -239,9 +239,14 @@ def create_spotkey():
     db.session.add(s)
     db.session.commit()
 
-    sk.primary_spot_id = s.id
-    db.session.add(sk)
-    db.session.commit()
+    try:
+        sk.primary_spot_id = s.id
+        db.session.add(sk)
+        db.session.commit()
+    except:
+        print "SPOT IT: ", s.id
+        print "SPOTKEY HAS SPOT ID: ", sk.primary_spot_id
+
 
     return jsonify({'status_code':200, 'date':datetime.now(), 'spotkey_id': sk.id})
 
