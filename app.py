@@ -87,9 +87,9 @@ class Spot(db.Model):
     details = db.Column(db.String)
     cross_street = db.Column(db.String)
 
-    def __init__(self, spotkey_id, priority, transport_type='Any', requires_navigation=False, \
-                 latitude=None, longitude=None, location_type=None, street_address=None, \
-                 city=None, state=None, zipcode=None, buzzer_code=None, door_number=None, \
+    def __init__(self, spotkey_id, priority, transport_type='Any', requires_navigation=False, 
+                 latitude=None, longitude=None, location_type=None, street_address=None, 
+                 city=None, state=None, zipcode=None, buzzer_code=None, door_number=None, 
                  details=None, cross_street=None):
 
         self.spotkey_id = spotkey_id
@@ -109,7 +109,7 @@ class Spot(db.Model):
         self.cross_street = cross_street
 
     def __repr__(self):
-        return '<Spot %r>' % self.id
+        return '<Spot %r>' % self.priority
 
 
 def get_conn_cursor():
