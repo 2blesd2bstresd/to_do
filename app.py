@@ -215,6 +215,8 @@ def create_spotkey():
     
     form = request.form
 
+    print form
+
     name = form.get('name', None)
     share_with_all = form.get('share_with_all', False)
     location_type = form.get('location_type', None)
@@ -241,10 +243,7 @@ def create_spotkey():
 
     db.session.add(sk)
     db.session.add(s)
-    try:
-        db.session.commit()
-    except exc.IntegrityError, exc:
-        print exc
+
     # sk.primary_spot_id = s.id
     # db.session.add(sk)
     # db.session.commit()
