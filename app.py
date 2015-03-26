@@ -240,6 +240,7 @@ def create_spotkey():
 
     db.session.add(sk)
     db.session.add(s)
+    db.session.commit()
 
     # sk.primary_spot_id = s.id
     # db.session.add(sk)
