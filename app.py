@@ -236,13 +236,12 @@ def create_spotkey():
                  city, state, zipcode, buzzer_code, door_number, 
                  details, cross_street)
 
-    # db.session.add(s)
-    # db.session.commit()
+    db.session.add(s)
+    db.session.commit()
 
-    # sk.primary_spot_id = s.id
-    # db.session.add(sk)
-    # db.session.commit()
-    #
+    sk.primary_spot_id = s.id
+    db.session.add(sk)
+    db.session.commit()
 
     return jsonify({'status_code':200, 'date':datetime.now(), 'spotkey_id': sk.id})
 
