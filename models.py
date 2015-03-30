@@ -68,11 +68,12 @@ class Spot(db.Model):
     door_number = db.Column(db.Integer)
     details = db.Column(db.String)
     cross_street = db.Column(db.String)
+    picture_url = db.Column(db.String)
 
     def __init__(self, spotkey_id, priority, transport_type='Any', requires_navigation=False, 
                  latitude=None, longitude=None, street_address=None, 
                  city=None, state=None, zipcode=None, buzzer_code=None, door_number=None, 
-                 details=None, cross_street=None):
+                 details=None, cross_street=None, picture_url=None):
 
         self.spotkey_id = spotkey_id
         self.priority = priority
@@ -88,6 +89,7 @@ class Spot(db.Model):
         self.door_number = door_number
         self.details = details
         self.cross_street = cross_street
+        self.picture_url = picture_url
 
     def __repr__(self):
         return '<Spot %r>' % self.priority
