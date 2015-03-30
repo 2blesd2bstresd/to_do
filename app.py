@@ -40,7 +40,7 @@ def get_spotkeys(user_id, c):
     sk_list = []
     for sk in spotkeys:
         spotkey = {
-                    'name' : sk.name,
+                    'name' : 'sk.name',
                     'id' : sk.id,
                     'owner_id' : sk.owner_id,
                     'primary_spot_id': sk.primary_spot_id
