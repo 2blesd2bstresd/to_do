@@ -47,7 +47,7 @@ def get_spotkeys(user_id, c):
                    }
         sk_list.append(spotkey)
     for sk in spotkeys:
-        spots = Spot.query.filter_by(id=sk.id).first()
+        spot = Spot.query.filter_by(id=sk.id).first()
         # c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
         # spot = c.fetchone()
         sk['spot'] = {
