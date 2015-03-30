@@ -11,9 +11,10 @@ from datetime import datetime
 import json
 from database import db
 from models import User, Spot, Spotkey
+import config
 
 urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse('//yymrdbzqoowsqh:1bmpBpFOiKPLzweXcuX04FASwB@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b')
+url = urlparse.urlparse(config.URL)
 app = db.app
 
 
@@ -21,8 +22,8 @@ def get_conn_cursor():
 
     conn = psycopg2.connect(
         database=url.path[1:],
-        user='yymrdbzqoowsqh',  
-        password='1bmpBpFOiKPLzweXcuX04FASwB',
+        user=config.USERNAME,  
+        password=config.PASSWORD,
         host=url.hostname,
         port=url.port
     )
@@ -33,24 +34,30 @@ def get_conn_cursor():
 
 def get_spotkeys(user_id, c):
 
-    c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % user_id)
-    spotkeys = []
-    for sk in c.fetchall():
-        spotkey = {'name' : sk.get('name', None),
-                   'id' : sk.get('id', None),
-                   'owner_id' : sk.get('owner_id', None),
-                   'primary_spot_id': sk.get('primary_spot_id', None)}
-        spotkeys.append(spotkey)
+
+    spotkeys = Spotkey.query.filter_by(owner_id=user_id)
+    # c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % user_id)
+    sk_list = []
     for sk in spotkeys:
-        c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
-        spot = c.fetchone()
-        sk['spot'] = {'id': spot.get('id', None),
-                      'longitude': spot.get('longitude', None),
-                      'latitude': spot.get('latitude', None),
-                      'picture_url': spot.get('picture_url', None),
-                      'requires_navigation': spot.get('requires_navigation', None),
-                      'details': spot.get('details', None)
-                    }
+        spotkey = {
+                    'name' : sk.name,
+                    'id' : sk.id,
+                    'owner_id' : sk.owner_id,
+                    'primary_spot_id': sk.primary_spot_id
+                   }
+        sk_list.append(spotkey)
+    for sk in spotkeys:
+        spots = Spot.query.filter_by(id=sk.id).first()
+        # c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
+        # spot = c.fetchone()
+        sk['spot'] = {
+                       'id': spot.id,
+                       'longitude': spot.longitude,
+                       'latitude': spot.latitude,
+                       'picture_url': spot.picture_url,
+                       'requires_navigation': spot.requires_navigation,
+                       'details': spot.details
+                     }
     return spotkeys
 
 
