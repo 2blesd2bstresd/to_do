@@ -38,32 +38,30 @@ def get_spotkeys(user_id, c):
     spotkeys = Spotkey.query.filter_by(owner_id=user_id)
     # c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % user_id)
     sk_list = []
-    try:
-        for sk in spotkeys:
-            spotkey = {
-                        'name' : sk.name,
-                        'id' : sk.id,
-                        'owner_id' : sk.owner_id,
-                        'primary_spot_id': sk.primary_spot_id
-                       }
-            sk_list.append(spotkey)
+    for sk in spotkeys:
+        spotkey = {
+                    'name' : sk.name,
+                    'id' : sk.id,
+                    'owner_id' : sk.owner_id,
+                    'primary_spot_id': sk.primary_spot_id
+                   }
+        sk_list.append(spotkey)
 
 
-        for sk in sk_list:
-            spot = Spot.query.filter_by(id=sk.get('primary_spot_id', None)).first()
-            # c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
-            # spot = c.fetchone()
-            sk['spot'] = {
-                           'id': spot.id,
-                           'longitude': spot.longitude,
-                           'latitude': spot.latitude,
-                           'picture_url': spot.picture_url,
-                           'requires_navigation': spot.requires_navigation,
-                           'details': spot.details
-                         }
-    except:
-        print 'SPOTKEY LIST: ', sk_list
-        print 'SPOTKEYS: ', spotkeys
+    for sk in sk_list:
+        spot = Spot.query.filter_by(id=sk.get('primary_spot_id', None)).first()
+        # c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
+        # spot = c.fetchone()
+        sk['spot'] = {
+                       'id': spot.id,
+                       'longitude': spot.longitude,
+                       'latitude': spot.latitude,
+                       'picture_url': spot.picture_url,
+                       'requires_navigation': spot.requires_navigation,
+                       'details': spot.details
+                     }
+    print 'SPOTKEY LIST: ', sk_list
+    print 'SPOTKEYS: ', spotkeys
     return []
 
 
