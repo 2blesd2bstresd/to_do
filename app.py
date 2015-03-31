@@ -102,7 +102,7 @@ def login():
                        'id': con.get('contact_id', None),
                        'profile_url': con.get('profile_url', None)}
             contact_list.append(contact)
-        user['contacts'] = contacts
+        user['contacts'] = contact_list
         
         return jsonify(user)
     else:
