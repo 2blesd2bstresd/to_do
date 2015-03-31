@@ -10,7 +10,7 @@ from sqlalchemy import exc
 from datetime import datetime
 import json
 from database import db
-from models import User, Spot, Spotkey
+from models import User, Spot, Spotkey, Contact
 import config
 
 urlparse.uses_netloc.append("postgres")
@@ -96,7 +96,7 @@ def login():
         # get the users contacts
         contact_list = []
         # c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user['id'])
-        contacts = Contacts.query.filter_by(primary_id=user['id'])
+        contacts = Contact.query.filter_by(primary_id=user['id'])
         for con in contacts:
             contact = {'username': con.contact_username,
                        'id': con.contact_id,
