@@ -36,7 +36,6 @@ def get_spotkeys(user_id, c):
 
 
     spotkeys = Spotkey.query.filter_by(owner_id=user_id)
-    # c.execute("SELECT id, name, owner_id, primary_spot_id FROM spotkeys WHERE owner_id=%s" % user_id)
     sk_list = []
     for sk in spotkeys:
         spotkey = {
@@ -50,8 +49,6 @@ def get_spotkeys(user_id, c):
 
     for sk in sk_list:
         spot = Spot.query.filter_by(id=sk.get('primary_spot_id', None)).first()
-        # c.execute("SELECT id, longitude, latitude, picture_url, details, requires_navigation, priority FROM spots WHERE id=%s" % sk.get('primary_spot_id', None))
-        # spot = c.fetchone()
         sk['spot'] = {
                        'id': spot.id,
                        'longitude': spot.longitude,
@@ -97,13 +94,14 @@ def login():
         user['spotkeys'] = spotkeys
 
         # get the users contacts
-        contacts = []
-        c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user['id'])
-        for con in c.fetchall():
+        contact_list = []
+        # c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user['id'])
+        contacts = Contacts.query.filter_by(primary_id=user['id'])
+        for con in contacts:
             contact = {'username': con.get('contact_username', None),
                        'id': con.get('contact_id', None),
                        'profile_url': con.get('profile_url', None)}
-            contacts.append(contact)
+            contact_list.append(contact)
         user['contacts'] = contacts
         
         return jsonify(user)
@@ -213,7 +211,7 @@ def get_user(user_id):
     except:
         return 'adding contacts'
     
-    return jsonify({'user': user})
+    return jsonify(user)
 
 
 @app.route('/all_spotkeys/<int:user_id>', methods=['GET'])
