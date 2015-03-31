@@ -1,6 +1,6 @@
 import uuid
 from database import db
-from json import JsonSerializer
+# from json import JsonSerializer
 
 class User(db.Model):
 
@@ -26,11 +26,11 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' & self.username
 
-class UserJsonSerializer(JsonSerializer):
-    __attributes__ = ['id', 'first_name', 'last_name', 'profile_url', 'email', 'username', 'password']
-    __required__ = ['id', 'first_name', 'last_name', 'username', 'password']
-    __attribute_serializer__ = dict(user_id='id', create_date='date')
-    __object_class__ = User
+# class UserJsonSerializer(JsonSerializer):
+#     __attributes__ = ['id', 'first_name', 'last_name', 'profile_url', 'email', 'username', 'password']
+#     __required__ = ['id', 'first_name', 'last_name', 'username', 'password']
+#     __attribute_serializer__ = dict(user_id='id', create_date='date')
+#     __object_class__ = User
 
 
 class Spotkey(db.Model):
