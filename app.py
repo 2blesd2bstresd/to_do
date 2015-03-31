@@ -60,9 +60,7 @@ def get_spotkeys(user_id, c):
                        'requires_navigation': spot.requires_navigation,
                        'details': spot.details
                      }
-    print 'SPOTKEY LIST: ', sk_list
-    print 'SPOTKEYS: ', spotkeys
-    return []
+    return sk_list
 
 
 @app.route('/')
@@ -215,7 +213,7 @@ def get_user(user_id):
     except:
         return 'adding contacts'
     
-    return jsonify(user)
+    return jsonify({'user': user})
 
 
 @app.route('/all_spotkeys/<int:user_id>', methods=['GET'])
