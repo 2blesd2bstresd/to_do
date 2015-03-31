@@ -93,3 +93,37 @@ class Spot(db.Model):
 
     def __repr__(self):
         return '<Spot %r>' % self.priority
+
+class Contact(db.Model):
+
+    __tablename__ = "contacts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    primary_id = db.Column(db.Integer, nullable=False)
+    contact_id = db.Column(db.Integer, nullable=False) 
+    contact_username = db.Column(db.String)
+    profile_url = db.Column(db.String)
+    create_date = db.Column(db.String, nullable=False)
+
+
+    def __init__(self, primary_id, contact_id, contact_username, profile_url=None):
+
+        self.primary_id = primary_id
+        self.contact_id = contact_id
+        self.contact_username = contact_username
+        self.profile_url = profile_url
+
+    def __repr__(self):
+        return '<Contact %r>' % contact_username
+
+
+
+
+
+
+
+
+
+
+
+
