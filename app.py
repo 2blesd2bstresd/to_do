@@ -73,8 +73,6 @@ def hi():
 @app.route('/login', methods=['POST'])
 def login():
 
-    c = get_conn_cursor()
-
     auth = request.authorization
     username = auth.get('username', None)
     password = auth.get('password', None)
@@ -137,6 +135,7 @@ def create_spotkey():
     share_with_all = form.get('share_with_all', False)
     location_type = form.get('location_type', None)
     street_address = form.get('street_address', None)
+    street_address_2 = form.get('street_address_2', None)
     city = form.get('city', None)
     state = form.get('state', None)
     zipcode = form.get('zipcode', None)
@@ -155,7 +154,7 @@ def create_spotkey():
     db.session.commit()
 
     s = Spot(sk.id, 1, transport_type, requires_navigation, 
-                 latitude, longitude, street_address, 
+                 latitude, longitude, street_address, street_address_2,
                  city, state, zipcode, buzzer_code, door_number, 
                  details, cross_street)
 
@@ -213,7 +212,7 @@ def all_spotkeys(user_id):
 
     spotkeys = []
 
-    # c.execute("SELECT contact_id FROM Contacts WHERE primary_id=%s" % user_id)
+    c.execute("SELECT contact_id FROM Contacts WHERE primary_id=%s" % user_id)
     
 
     contacts = [con.get('contact_id', None) for con in c.fetchall()]
@@ -226,21 +225,18 @@ def all_spotkeys(user_id):
     return jsonify({'spotkeys': spotkeys})
 
 
-@app.route('/spotkey/<int:spotkey_id>', methods=['GET'])
-def get_spotkey(spotkey_id):
-    c = get_conn_cursor()
+# @app.route('/spotkey/<int:spotkey_id>', methods=['GET'])
+# def get_spotkey(spotkey_id):
 
-    c.execute("SELECT * FROM spotkeys WHERE id=%s" % spotkey_id)
+#     spotkey = Spotkey.query.filter_by(id=spotkey_id)
 
-    spotkey=c.fetchone()
-    c.execute("SELECT * FROM spots WHERE id=%s" % spotkey.get('primary_spot_id', None))
+#     spot = Spot.query.filter_by(id=spotkey.primary_spot_id)
 
-    spot = c.fetchone()
-    spotkey['spot'] = spot
+#     spotkey['spot'] = spot
 
-    if not spotkey:
-            abort(404)
-    return jsonify({'spotkey': spotkey})
+#     if not spotkey:
+#             abort(404)
+#     return jsonify({'spotkey': spotkey})
 
 
 @app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])

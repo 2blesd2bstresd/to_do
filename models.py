@@ -1,4 +1,6 @@
+import uuid
 from database import db
+from json import JsonSerializer
 
 class User(db.Model):
 
@@ -12,7 +14,7 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String)
 
-    def __init__(self, username, password, first_name=None, last_name=None, email=None, profile_url=None):
+    def __init__(self, username, password, first_name=None, last_name=None, email=None, profile_url=None, id=uuid.uuid4()):
 
         self.username = username
         self.password = password
@@ -23,6 +25,12 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' & self.username
+
+class UserJsonSerializer(JsonSerializer):
+    __attributes__ = ['id', 'first_name', 'last_name', 'profile_url', 'email', 'username', 'password']
+    __required__ = ['id', 'first_name', 'last_name', 'username', 'password']
+    __attribute_serializer__ = dict(user_id='id', create_date='date')
+    __object_class__ = User
 
 
 class Spotkey(db.Model):
@@ -57,6 +65,7 @@ class Spot(db.Model):
     spotkey_id = db.Column(db.Integer, nullable=False)
     priority = db.Column(db.Integer, nullable=False) 
     street_address = db.Column(db.String)
+    street_address_2 = db.Column(db.String)
     city = db.Column(db.String)
     state = db.Column(db.String)
     zipcode = db.Column(db.String)
@@ -71,7 +80,7 @@ class Spot(db.Model):
     picture_url = db.Column(db.String)
 
     def __init__(self, spotkey_id, priority, transport_type='Any', requires_navigation=False, 
-                 latitude=None, longitude=None, street_address=None, 
+                 latitude=None, longitude=None, street_address=None, street_address_2=None, 
                  city=None, state=None, zipcode=None, buzzer_code=None, door_number=None, 
                  details=None, cross_street=None, picture_url=None):
 
@@ -82,6 +91,7 @@ class Spot(db.Model):
         self.latitude = latitude
         self.longitude = longitude
         self.street_address = street_address
+        self.street_address_2 = street_address_2
         self.city = city
         self.state = state
         self.zipcode = zipcode
@@ -115,15 +125,4 @@ class Contact(db.Model):
 
     def __repr__(self):
         return '<Contact %r>' % contact_username
-
-
-
-
-
-
-
-
-
-
-
 
