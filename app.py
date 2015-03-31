@@ -184,7 +184,7 @@ def get_user(user_id):
             'first_name': u.first_name,
             'last_name': u.last_name,
             'profile_url': u.profile_url,
-            'username', u.username
+            'username': u.username
             }
 
     spotkey_list = []
@@ -213,7 +213,9 @@ def all_spotkeys(user_id):
 
     spotkeys = []
 
-    c.execute("SELECT contact_id FROM Contacts WHERE primary_id=%s" % user_id)
+    # c.execute("SELECT contact_id FROM Contacts WHERE primary_id=%s" % user_id)
+    
+
     contacts = [con.get('contact_id', None) for con in c.fetchall()]
     contacts.append(user_id)
 
