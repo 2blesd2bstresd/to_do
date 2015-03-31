@@ -32,7 +32,7 @@ def get_conn_cursor():
     return c
 
 
-def get_spotkeys(user_id, c):
+def get_spotkeys(user_id):
 
 
     spotkeys = Spotkey.query.filter_by(owner_id=user_id)
@@ -89,7 +89,7 @@ def login():
 
         # Get users spotkeys
         spotkeys = []
-        for sk in get_spotkeys(user['id'], c):
+        for sk in get_spotkeys(user['id']):
             spotkeys.append(sk)
         user['spotkeys'] = spotkeys
 
@@ -173,39 +173,36 @@ def create_spotkey():
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
 
-    # get the query cursor
-    c = get_conn_cursor()
-
     # get the user info
-    c.execute("SELECT id, username, first_name, last_name, profile_url FROM users WHERE id=%s" % user_id)
-    u = c.fetchone()
-
-    if not u:
+    try:
+        u = User.query.filter_by(id=user_id).first()
+    except:
         abort(404)
 
-    user = {}
-    user['id'] = u.get('id', None)
-    user['first_name'] = u.get('first_name', None)
-    user['last_name'] = u.get('last_name', None)
-    user['profile_url'] = u.get('profile_url', None)
-    user['username'] = u.get('username', None)
-    spotkeys = []
-    for sk in get_spotkeys(user_id, c):
-        spotkeys.append(sk)
-    user['spotkeys'] = spotkeys
+    user = {
+            'id': u.id,
+            'first_name': u.first_name,
+            'last_name': u.last_name,
+            'profile_url': u.profile_url,
+            'username', u.username
+            }
+
+    spotkey_list = []
+    for sk in get_spotkeys(user_id):
+        spotkey_list.append(sk)
+    user['spotkeys'] = spotkey_list
 
     # get the users contacts
-    try:
-        contact_list = []
-        contacts = Contact.query.filter_by(primary_id=user['id'])
-        for con in contacts:
-            contact = {'username': con.contact_username,
-                       'id': con.contact_id,
-                       'profile_url': con.profile_url}
-            contact_list.append(contact)
-        user['contacts'] = contact_list
-    except:
-        return 'adding contacts'
+    contact_list = []
+    contacts = Contact.query.filter_by(primary_id=user['id'])
+    for con in contacts:
+        contact = {
+                   'username': con.contact_username,
+                   'id': con.contact_id,
+                   'profile_url': con.profile_url
+                  }
+        contact_list.append(contact)
+    user['contacts'] = contact_list
     
     return jsonify(user)
 
@@ -222,7 +219,7 @@ def all_spotkeys(user_id):
 
     spotkeys = []
     for con_id in contacts:
-        for sk in (get_spotkeys(con_id, c)):
+        for sk in (get_spotkeys(con_id)):
             spotkeys.append(sk)
     return jsonify({'spotkeys': spotkeys})
 
