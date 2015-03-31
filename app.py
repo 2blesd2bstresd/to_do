@@ -95,7 +95,6 @@ def login():
 
         # get the users contacts
         contact_list = []
-        # c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user['id'])
         contacts = Contact.query.filter_by(primary_id=user['id'])
         for con in contacts:
             contact = {'username': con.contact_username,
@@ -195,19 +194,16 @@ def get_user(user_id):
         spotkeys.append(sk)
     user['spotkeys'] = spotkeys
 
-    # get the users spotkeys
-    # user['spotkeys'] = get_spotkeys(user_id)
-
     # get the users contacts
     try:
-        contacts = []
-        c.execute("SELECT contact_username , contact_id, profile_url FROM Contacts WHERE primary_id=%s" % user_id)
-        for con in c.fetchall():
-            contact = {'username': con.get('contact_username', None),
-                       'id': con.get('contact_id', None),
-                       'profile_url': con.get('profile_url', None)}
-            contacts.append(contact)
-        user['contacts'] = contacts
+        contact_list = []
+        contacts = Contact.query.filter_by(primary_id=user['id'])
+        for con in contacts:
+            contact = {'username': con.contact_username,
+                       'id': con.contact_id,
+                       'profile_url': con.profile_url}
+            contact_list.append(contact)
+        user['contacts'] = contact_list
     except:
         return 'adding contacts'
     
