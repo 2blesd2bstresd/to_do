@@ -4,18 +4,22 @@ import psycopg2
 # from functools import wraps
 from psycopg2.extras import RealDictCursor
 import urlparse
-from flask import Flask, jsonify, abort, request, session, Response, make_response
+from flask import Flask, jsonify, abort, request, session, Response, make_response, flask_login
 from flask.ext.sqlalchemy import SQLAlchemy
+# from flask.ext.login import LoginManager
 from sqlalchemy import exc
 from datetime import datetime
 import json
 from database import db
 from models import User, Spot, Spotkey, Contact
 import config
+from serialize import serialize
 
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(config.URL)
 app = db.app
+# login_manager = LoginManager()
+login_manager.init_app(app)
 
 
 def get_conn_cursor():
@@ -36,6 +40,7 @@ def get_spotkeys(user_id):
 
 
     spotkeys = Spotkey.query.filter_by(owner_id=user_id)
+
     sk_list = []
     for sk in spotkeys:
         spotkey = {
@@ -59,6 +64,8 @@ def get_spotkeys(user_id):
                      }
     return sk_list
 
+def load_user(userid):
+    return User.get(userid)
 
 @app.route('/')
 def hi():
@@ -208,19 +215,20 @@ def get_user(user_id):
 
 @app.route('/all_spotkeys/<int:user_id>', methods=['GET'])
 def all_spotkeys(user_id):
-    c = get_conn_cursor()
+    # c = get_conn_cursor()
 
-    spotkeys = []
+    # spotkeys = []
 
-    c.execute("SELECT contact_id FROM Contacts WHERE primary_id=%s" % user_id)
+    # c.execute("SELECT contact_id FROM Contacts WHERE primary_id=%s" % user_id)
+    # print 'HERES THE USER ID: ', user_id
+    contacts = Contact.query.filter_by(primary_id=user_id)
     
-
-    contacts = [con.get('contact_id', None) for con in c.fetchall()]
+    contacts = [con.contact_id for con in contacts]
     contacts.append(user_id)
-
     spotkeys = []
     for con_id in contacts:
         for sk in (get_spotkeys(con_id)):
+            # print "SPOTKEYS: ", sk
             spotkeys.append(sk)
     return jsonify({'spotkeys': spotkeys})
 
