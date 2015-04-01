@@ -13,7 +13,7 @@ import json
 from database import db
 from models import User, Spot, Spotkey, Contact
 import config
-from serialize import serialize
+# from serialize import serialize
 
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(config.URL)
