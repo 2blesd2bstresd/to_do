@@ -6,35 +6,20 @@ from psycopg2.extras import RealDictCursor
 import urlparse
 from flask import Flask, jsonify, abort, request, session, Response, make_response
 from flask.ext.sqlalchemy import SQLAlchemy
-# from flask.ext.login import LoginManager
-from sqlalchemy import exc
+from flask.ext.login import LoginManager
+from sqlalchemy import exc, desc
 from datetime import datetime
 import json
 from database import db
 from models import User, Spot, Spotkey, Contact
 import config
-# from serialize import serialize
+from serialize import serialize
 
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(config.URL)
 app = db.app
 # login_manager = LoginManager()
 # login_manager.init_app(app)
-
-
-def get_conn_cursor():
-
-    conn = psycopg2.connect(
-        database=url.path[1:],
-        user=config.USERNAME,  
-        password=config.PASSWORD,
-        host=url.hostname,
-        port=url.port
-    )
-    conn.autocommit=True
-    c = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    return c
-
 
 def get_spotkeys(user_id):
 
@@ -215,12 +200,7 @@ def get_user(user_id):
 
 @app.route('/all_spotkeys/<int:user_id>', methods=['GET'])
 def all_spotkeys(user_id):
-    # c = get_conn_cursor()
 
-    # spotkeys = []
-
-    # c.execute("SELECT contact_id FROM Contacts WHERE primary_id=%s" % user_id)
-    # print 'HERES THE USER ID: ', user_id
     contacts = Contact.query.filter_by(primary_id=user_id)
     
     contacts = [con.contact_id for con in contacts]
@@ -249,14 +229,15 @@ def all_spotkeys(user_id):
 
 @app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])
 def get_spot(spotkey_id, transport_type):
-    c = get_conn_cursor()
-    c.execute("SELECT * FROM spots WHERE spotkey_id={0} AND transport_type=\'{1}\' ORDER BY priority DESC".format(spotkey_id, transport_type))        
-    spots=c.fetchall()
+
+
+    spots = Spot.query.filter_by(spotkey_id=spotkey_id).filter_by(transport_type=transport_type).order_by(desc(Spot.priority))
+    spots_list = [serialize(spot) for spot in spots]
 
     if not spots:
         return jsonify({'error': 'No Spots.',
                  'error_code': 1})
-    return jsonify({'spots': spots})
+    return jsonify({'spots': spots_list})
 
 
 @app.errorhandler(404)
