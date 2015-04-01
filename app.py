@@ -4,7 +4,7 @@ import psycopg2
 # from functools import wraps
 from psycopg2.extras import RealDictCursor
 import urlparse
-from flask import Flask, jsonify, abort, request, session, Response, make_response, flask_login
+from flask import Flask, jsonify, abort, request, session, Response, make_response
 from flask.ext.sqlalchemy import SQLAlchemy
 # from flask.ext.login import LoginManager
 from sqlalchemy import exc
@@ -19,7 +19,7 @@ urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(config.URL)
 app = db.app
 # login_manager = LoginManager()
-login_manager.init_app(app)
+# login_manager.init_app(app)
 
 
 def get_conn_cursor():
