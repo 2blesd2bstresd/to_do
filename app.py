@@ -6,25 +6,32 @@ from psycopg2.extras import RealDictCursor
 import urlparse
 from flask import Flask, jsonify, abort, request, session, Response, make_response
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.login import LoginManager
 from sqlalchemy import exc, desc
 from datetime import datetime
 import json
 from database import db
-from models import User, Spot, Spotkey, Contact
+from models import User, Spot, Spotkey, Contact, Session, View
 import config
 from serialize import serialize
 
+
+# Setup the app, instantiate
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(config.URL)
 app = db.app
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-
-def get_spotkeys(user_id):
 
 
-    spotkeys = Spotkey.query.filter_by(owner_id=user_id)
+def get_spotkeys(user_id=None, spotkey_ids=None):
+    """
+    Accepts single user ID or list of spotkeys and returns
+    jsonify-able list of spotkeys
+    """
+
+    if user_id:
+        spotkeys = Spotkey.query.filter_by(owner_id=user_id)
+    else:
+        spotkeys = [Spotkey.query.filter_by(id=sk_id).first() for sk_id in spotkey_ids]
+
 
     sk_list = []
     for sk in spotkeys:
@@ -49,26 +56,44 @@ def get_spotkeys(user_id):
                      }
     return sk_list
 
-def load_user(userid):
-    return User.get(userid)
+
+def id_from_token():
+    """
+    Gets x-auth-token (session id) value from request and returns user_id from
+    session lookup.
+    """
+    token = request.headers.get('x-auth-token', None)
+
+    # get the user info
+    try:
+        s = Session.query.filter_by(id=token).first()
+        return s.user_id
+    except:
+        abort(401)
+
+
+# @login_manager.request_loader
+def load_user_from_request(request):
+
+    auth = request.authorization
+
+    username = auth.get('username', None)
+    password = auth.get('password', None)
+    u = User.query.filter_by(username=username).filter_by(password=password).scalar()
+
+    return u
+
 
 @app.route('/')
 def hi():
-    try:
-        from models import Spotkey
-        sk = Spotkey(2, 'tester', datetime.now())
-    except Exception, e:
-        print 'trace: ', e
-    print 'SKID: ', sk.id
     return 'vielkom and bienvenue.'
 
-@app.route('/login', methods=['POST'])
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
 
-    auth = request.authorization
-    username = auth.get('username', None)
-    password = auth.get('password', None)
-    u = User.query.filter_by(username=username).filter_by(password=password).first()
+    u = load_user_from_request(request)
+
     if u:
         user = {}
         user['id'] = u.id
@@ -76,6 +101,13 @@ def login():
         user['last_name'] = u.last_name
         user['profile_url'] = u.profile_url
         user['username'] = u.username
+
+        s = Session.query.filter_by(user_id=u.id).first()
+
+        if not s:
+            s = Session(u.id)
+            db.session.add(s)
+            db.session.commit()
 
         # Get users spotkeys
         spotkeys = []
@@ -92,8 +124,8 @@ def login():
                        'profile_url': con.profile_url}
             contact_list.append(contact)
         user['contacts'] = contact_list
-        
-        return jsonify(user)
+
+        return jsonify({'user': user, 'auth_token': s.id})
     else:
         return abort(401)
 
@@ -119,9 +151,9 @@ def register_user():
 @app.route('/create_spotkey', methods=['POST'])
 def create_spotkey():
     
-    form = request.form
+    user_id = id_from_token()
 
-    print form
+    form = request.form
 
     name = form.get('name', None)
     share_with_all = form.get('share_with_all', False)
@@ -139,8 +171,9 @@ def create_spotkey():
     door_number = form.get('door_number', None)
     details = form.get('details', None)
     cross_street = form.get('cross_street', None)
+    picture_url = form.get('picture_url', None)
 
-    sk = Spotkey(2, name, datetime.now(), location_type, share_with_all)
+    sk = Spotkey(user_id, name, datetime.now(), location_type, share_with_all)
 
     db.session.add(sk)
     db.session.commit()
@@ -148,7 +181,7 @@ def create_spotkey():
     s = Spot(sk.id, 1, transport_type, requires_navigation, 
                  latitude, longitude, street_address, street_address_2,
                  city, state, zipcode, buzzer_code, door_number, 
-                 details, cross_street)
+                 details, cross_street, picture_url)
 
     db.session.add(s)
     db.session.commit()
@@ -157,18 +190,16 @@ def create_spotkey():
     db.session.add(sk)
     db.session.commit()
 
-    return jsonify({'status_code':200, 'date':datetime.now(), 'spotkey_id': sk.id})
-
+    return jsonify({'date':datetime.now(), 'spotkey_id': sk.id})
 
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
 
-    # get the user info
     try:
         u = User.query.filter_by(id=user_id).first()
     except:
-        abort(404)
+        abort(403)
 
     user = {
             'id': u.id,
@@ -198,9 +229,37 @@ def get_user(user_id):
     return jsonify(user)
 
 
-@app.route('/all_spotkeys/<int:user_id>', methods=['GET'])
-def all_spotkeys(user_id):
+@app.route('/spotkey_viewed', methods=['POST'])
+def spotkey_vewed():
 
+    user_id = id_from_token()
+    spotkey_id = request.form.get('spotkey_id', None)
+
+    try:
+        v = View(user_id, spotkey_id)
+        db.session.add(v)
+        db.session.commit()
+        return jsonify({'date': datetime.now()})
+    except:
+        abort(400)
+
+
+@app.route('/recently_viewed', methods=['GET'])
+def recently_viewed():
+
+    user_id = id_from_token()
+    views = View.query.filter_by(user_id=user_id).order_by('create_date').limit(3)
+
+    spotkey_ids = [view.spotkey_id for view in views]
+    spotkeys = get_spotkeys(spotkey_ids=spotkey_ids)
+
+    return jsonify({'spotkeys': spotkeys})
+
+
+@app.route('/all_spotkeys', methods=['GET'])
+def all_spotkeys():
+
+    user_id = id_from_token()
     contacts = Contact.query.filter_by(primary_id=user_id)
     
     contacts = [con.contact_id for con in contacts]
@@ -246,4 +305,3 @@ def not_found(error):
 
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port = port, debug=True)
-

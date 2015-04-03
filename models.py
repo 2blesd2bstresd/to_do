@@ -1,6 +1,5 @@
 import uuid
 from database import db
-# from json import JsonSerializer
 
 class User(db.Model):
 
@@ -13,8 +12,9 @@ class User(db.Model):
     username = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String)
+    create_date = db.Column(db.DateTime(), default=db.func.now())
 
-    def __init__(self, username, password, first_name=None, last_name=None, email=None, profile_url=None, id=uuid.uuid4()):
+    def __init__(self, username, password, first_name=None, last_name=None, email=None, profile_url=None, create_date=None):
 
         self.username = username
         self.password = password
@@ -22,15 +22,22 @@ class User(db.Model):
         self.last_name = last_name
         self.email = email
         self.profile_url = profile_url
+        self.create_date = create_date
 
+    def is_authenticated(self):
+        return True
+ 
+    def is_active(self):
+        return True
+ 
+    def is_anonymous(self):
+        return False
+ 
+    def get_id(self):
+        return unicode(self.id)
+ 
     def __repr__(self):
-        return '<User %r>' & self.username
-
-# class UserJsonSerializer(JsonSerializer):
-#     __attributes__ = ['id', 'first_name', 'last_name', 'profile_url', 'email', 'username', 'password']
-#     __required__ = ['id', 'first_name', 'last_name', 'username', 'password']
-#     __attribute_serializer__ = dict(user_id='id', create_date='date')
-#     __object_class__ = User
+        return '<User %r>' % (self.username)
 
 
 class Spotkey(db.Model):
@@ -42,10 +49,10 @@ class Spotkey(db.Model):
     location_type = db.Column(db.String)
     primary_spot_id = db.Column(db.Integer)
     name = db.Column(db.String)
-    create_date = db.Column(db.String, nullable=False)
+    create_date = db.Column(db.DateTime(), default=db.func.now())
     share_with_all = db.Column(db.Boolean)
 
-    def __init__(self, owner_id, name, create_date, location_type=None, share_with_all=False, primary_spot_id=None):
+    def __init__(self, owner_id, name, create_date=None, location_type=None, share_with_all=False, primary_spot_id=None):
 
         self.owner_id = owner_id
         self.name = name
@@ -56,6 +63,7 @@ class Spotkey(db.Model):
 
     def __repr__(self):
         return '<Spotkey %r>' % self.name
+
 
 class Spot(db.Model):
 
@@ -78,11 +86,13 @@ class Spot(db.Model):
     details = db.Column(db.String)
     cross_street = db.Column(db.String)
     picture_url = db.Column(db.String)
+    create_date = db.Column(db.DateTime(), default=db.func.now())
+
 
     def __init__(self, spotkey_id, priority, transport_type='Any', requires_navigation=False, 
                  latitude=None, longitude=None, street_address=None, street_address_2=None, 
                  city=None, state=None, zipcode=None, buzzer_code=None, door_number=None, 
-                 details=None, cross_street=None, picture_url=None):
+                 details=None, cross_street=None, picture_url=None, create_date=None):
 
         self.spotkey_id = spotkey_id
         self.priority = priority
@@ -100,9 +110,11 @@ class Spot(db.Model):
         self.details = details
         self.cross_street = cross_street
         self.picture_url = picture_url
+        self.create_date = create_date
 
     def __repr__(self):
         return '<Spot %r>' % self.priority
+
 
 class Contact(db.Model):
 
@@ -113,7 +125,7 @@ class Contact(db.Model):
     contact_id = db.Column(db.Integer, nullable=False) 
     contact_username = db.Column(db.String)
     profile_url = db.Column(db.String)
-    create_date = db.Column(db.String, nullable=False)
+    create_date = db.Column(db.DateTime(), default=db.func.now())
 
 
     def __init__(self, primary_id, contact_id, contact_username, profile_url=None):
@@ -125,4 +137,39 @@ class Contact(db.Model):
 
     def __repr__(self):
         return '<Contact %r>' % contact_username
+
+
+class View(db.Model):
+
+    __tablename__ = "views"
+
+    id = db.Column(db.String, default=lambda:str(uuid.uuid4()), primary_key = True)
+    user_id = db.Column(db.Integer, nullable=False)
+    spotkey_id = db.Column(db.Integer, nullable=False)
+    create_date = db.Column(db.DateTime(), default=db.func.now())
+
+    def __init__(self, user_id, spotkey_id):
+
+        self.user_id = user_id
+        self.spotkey_id = spotkey_id
+
+    def __repr__(self):
+        return '<View %r>' % spotkey_id
+
+class Session(db.Model):
+
+    __tablename__ = "sessions"
+
+    id = db.Column(db.String(40), default=lambda:str(uuid.uuid4()), primary_key = True)
+    user_id = db.Column(db.Integer, nullable=False)
+    create_date = db.Column(db.DateTime(), default=db.func.now())
+
+    def __init__(self, user_id):
+
+        self.user_id = user_id
+
+    def __repr__(self):
+        return '<Session %r>' % user_id
+
+
 

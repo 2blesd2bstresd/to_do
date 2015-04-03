@@ -1,6 +1,8 @@
 def serialize(self):
     return_list = [type(None), float, int, bool]
     output = {}
+    if not self:
+        return None
     for k, v in self.__dict__.iteritems():
         if type(v) in return_list:
             output[k] = v
