@@ -6,7 +6,12 @@ DATABASE = 'd7p0rp7lvl3e7b'
 USERNAME = 'ngdndiaovlpgps' 
 PASSWORD = 'yBzzZ1UBU7c2phcIMBfB4HHA5u' 
 CSRF_ENABLED = True 
-# SECRET_KEY = 'my_precious'
+SECRET_KEY = 'my_precious'
+
+KEY = 'AKIAJOWTE7ICGRTG4HFQ'
+SECRET = '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'
+BUCKET = 'spotkey-host'
+
 # defines the full path for the database
 DATABASE_PATH = os.path.join(basedir, DATABASE)
 

@@ -1,5 +1,7 @@
 import uuid
+import datetime
 from database import db
+
 
 class User(db.Model):
 
@@ -12,9 +14,11 @@ class User(db.Model):
     username = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String)
+    spotkeys = db.Column(db.Integer)
+    tether_id = db.Column(db.String)
     create_date = db.Column(db.DateTime(), default=db.func.now())
 
-    def __init__(self, username, password, first_name=None, last_name=None, email=None, profile_url=None, create_date=None):
+    def __init__(self, username, password, first_name=None, last_name=None, email=None, profile_url=None, create_date=None, spotkeys=0):
 
         self.username = username
         self.password = password
@@ -23,6 +27,7 @@ class User(db.Model):
         self.email = email
         self.profile_url = profile_url
         self.create_date = create_date
+        self.spotkeys = spotkeys
 
     def is_authenticated(self):
         return True
@@ -163,6 +168,7 @@ class Session(db.Model):
     id = db.Column(db.String(40), default=lambda:str(uuid.uuid4()), primary_key = True)
     user_id = db.Column(db.Integer, nullable=False)
     create_date = db.Column(db.DateTime(), default=db.func.now())
+    modified_date = db.Column(db.DateTime(), default=db.func.now())
 
     def __init__(self, user_id):
 

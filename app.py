@@ -1,36 +1,40 @@
 #!flask/bin/python
 import os
 import psycopg2
+import boto
 # from functools import wraps
 from psycopg2.extras import RealDictCursor
-import urlparse
-from flask import Flask, jsonify, abort, request, session, Response, make_response
+from flask import Flask, jsonify, abort, request, session, Response, make_response, render_template, redirect
+from functools import wraps
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy import exc, desc
+from sqlalchemy import exc, desc, or_
 from datetime import datetime
 import json
 from database import db
 from models import User, Spot, Spotkey, Contact, Session, View
 import config
 from serialize import serialize
+from flask.ext.bcrypt import Bcrypt
 
 
 # Setup the app, instantiate
-urlparse.uses_netloc.append("postgres")
-url = urlparse.urlparse(config.URL)
 app = db.app
+bcrypt = Bcrypt(app)
 
 
 def get_spotkeys(user_id=None, spotkey_ids=None):
     """
-    Accepts single user ID or list of spotkeys and returns
-    jsonify-able list of spotkeys
+    Accepts single user ID or list of spotkey IDs as explicit argument
+    and returns jsonify-able list of spotkeys
     """
 
     if user_id:
-        spotkeys = Spotkey.query.filter_by(owner_id=user_id)
+        spotkeys = Spotkey.query.filter_by(owner_id=user_id) \
+                                .filter_by(share_with_all=True)
     else:
-        spotkeys = [Spotkey.query.filter_by(id=sk_id).first() for sk_id in spotkey_ids]
+        spotkeys = [Spotkey.query.filter_by(id=sk_id) \
+                                 .filter_by(share_with_all=True) \
+                                 .first() for sk_id in spotkey_ids]
 
 
     sk_list = []
@@ -57,7 +61,7 @@ def get_spotkeys(user_id=None, spotkey_ids=None):
     return sk_list
 
 
-def id_from_token():
+def get_id_from_token():
     """
     Gets x-auth-token (session id) value from request and returns user_id from
     session lookup.
@@ -74,24 +78,36 @@ def id_from_token():
 
 # @login_manager.request_loader
 def load_user_from_request(request):
-
-    auth = request.authorization
-
+    """
+    Get user from with authorization header.
+    """
+    try:
+        auth = request.authorization
+    except:
+        return abort(404)
+        
     username = auth.get('username', None)
-    password = auth.get('password', None)
-    u = User.query.filter_by(username=username).filter_by(password=password).scalar()
 
-    return u
+    user = User.query.filter_by(username=username).scalar()
+    if user and bcrypt.check_password_hash(user.password, auth.get('password', None)):
+        return user
+    else:
+        return None
 
+####################
+# Mobile Endpoints #
+####################
 
 @app.route('/')
-def hi():
-    return 'vielkom and bienvenue.'
-
+def index():
+    return 'vielkom and bienvenue'
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
+    """
+    Get the user, contacts, spotkeys. 
+    Create a session if one does not exist.
+    """
     u = load_user_from_request(request)
 
     if u:
@@ -101,11 +117,15 @@ def login():
         user['last_name'] = u.last_name
         user['profile_url'] = u.profile_url
         user['username'] = u.username
+        user['tether_id'] = u.tether_id
 
         s = Session.query.filter_by(user_id=u.id).first()
-
         if not s:
             s = Session(u.id)
+            db.session.add(s)
+            db.session.commit()
+        else:
+            s.modified_date = datetime.now()
             db.session.add(s)
             db.session.commit()
 
@@ -114,14 +134,18 @@ def login():
         for sk in get_spotkeys(user['id']):
             spotkeys.append(sk)
         user['spotkeys'] = spotkeys
+        user['spotkey_count'] = len(spotkeys)
 
         # get the users contacts
         contact_list = []
         contacts = Contact.query.filter_by(primary_id=user['id'])
         for con in contacts:
+            u = User.query.get(con.contact_id)
             contact = {'username': con.contact_username,
                        'id': con.contact_id,
-                       'profile_url': con.profile_url}
+                       'profile_url': con.profile_url,
+                       'spotkey_count': len(spotkeys),
+                       'tether_id': u.tether_id}
             contact_list.append(contact)
         user['contacts'] = contact_list
 
@@ -151,12 +175,12 @@ def register_user():
 @app.route('/create_spotkey', methods=['POST'])
 def create_spotkey():
     
-    user_id = id_from_token()
+    user_id = get_id_from_token()
 
     form = request.form
 
     name = form.get('name', None)
-    share_with_all = form.get('share_with_all', False)
+    share_with_all = form.get('share_with_all', True)
     location_type = form.get('location_type', None)
     street_address = form.get('street_address', None)
     street_address_2 = form.get('street_address_2', None)
@@ -190,29 +214,42 @@ def create_spotkey():
     db.session.add(sk)
     db.session.commit()
 
+    u = User.query.get(user_id)
+    db.session.add(u)
+    db.session.commit()
+
     return jsonify({'date':datetime.now(), 'spotkey_id': sk.id})
 
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
 
-    try:
-        u = User.query.filter_by(id=user_id).first()
-    except:
-        abort(403)
+    primary_user_id = get_id_from_token()
+
+    contact = Contact.query.filter_by(primary_id=primary_user_id).filter_by(contact_id=user_id).scalar()
+
+    if contact:
+        try:
+            u = User.query.filter_by(id=user_id).first()
+        except:
+            return abort(404)
+    else:
+        return abort(401)
 
     user = {
             'id': u.id,
             'first_name': u.first_name,
             'last_name': u.last_name,
             'profile_url': u.profile_url,
-            'username': u.username
+            'username': u.username,
+            'tether_id': u.tether_id
             }
 
     spotkey_list = []
     for sk in get_spotkeys(user_id):
         spotkey_list.append(sk)
     user['spotkeys'] = spotkey_list
+    user['spotkey_count'] = len(spotkey_list)
 
     # get the users contacts
     contact_list = []
@@ -232,7 +269,8 @@ def get_user(user_id):
 @app.route('/spotkey_viewed', methods=['POST'])
 def spotkey_vewed():
 
-    user_id = id_from_token()
+    user_id = get_id_from_token()
+
     spotkey_id = request.form.get('spotkey_id', None)
 
     try:
@@ -247,7 +285,7 @@ def spotkey_vewed():
 @app.route('/recently_viewed', methods=['GET'])
 def recently_viewed():
 
-    user_id = id_from_token()
+    user_id = get_id_from_token()
     views = View.query.filter_by(user_id=user_id).order_by('create_date').limit(3)
 
     spotkey_ids = [view.spotkey_id for view in views]
@@ -259,7 +297,7 @@ def recently_viewed():
 @app.route('/all_spotkeys', methods=['GET'])
 def all_spotkeys():
 
-    user_id = id_from_token()
+    user_id = get_id_from_token()
     contacts = Contact.query.filter_by(primary_id=user_id)
     
     contacts = [con.contact_id for con in contacts]
@@ -267,30 +305,16 @@ def all_spotkeys():
     spotkeys = []
     for con_id in contacts:
         for sk in (get_spotkeys(con_id)):
-            # print "SPOTKEYS: ", sk
             spotkeys.append(sk)
     return jsonify({'spotkeys': spotkeys})
-
-
-# @app.route('/spotkey/<int:spotkey_id>', methods=['GET'])
-# def get_spotkey(spotkey_id):
-
-#     spotkey = Spotkey.query.filter_by(id=spotkey_id)
-
-#     spot = Spot.query.filter_by(id=spotkey.primary_spot_id)
-
-#     spotkey['spot'] = spot
-
-#     if not spotkey:
-#             abort(404)
-#     return jsonify({'spotkey': spotkey})
 
 
 @app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])
 def get_spot(spotkey_id, transport_type):
 
-
-    spots = Spot.query.filter_by(spotkey_id=spotkey_id).filter_by(transport_type=transport_type).order_by(desc(Spot.priority))
+    spots = Spot.query.filter_by(spotkey_id=spotkey_id) \
+                      .filter(or_(transport_type==transport_type, transport_type=='all')) \
+                      .order_by(desc(Spot.priority))
     spots_list = [serialize(spot) for spot in spots]
 
     if not spots:
@@ -299,9 +323,32 @@ def get_spot(spotkey_id, transport_type):
     return jsonify({'spots': spots_list})
 
 
+@app.route('/tether', methods=['POST'])
+def tether():
+
+    user_id = get_id_from_token()
+
+    tether_id = request.form.get('spotkey_id', None)
+
+    db.session.query(User).filter_by(id=user_id).update({'tether_id':tether_id})
+
+    return jsonify({'status':'success', 'date':datetime.now()})
+
+
+@app.route('/untether', methods=['GET', 'POST'])
+def untether():
+
+    user_id = get_id_from_token()
+
+    db.session.query(User).filter_by(id=user_id).update({'tether_id': None})
+
+    return jsonify({'status':'success', 'date':datetime.now()})
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port = port, debug=True)
+
