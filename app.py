@@ -141,10 +141,13 @@ def login():
         contacts = Contact.query.filter_by(primary_id=user['id'])
         for con in contacts:
             u = User.query.get(con.contact_id)
+
+            spotkey_count = db.session.query(Spotkey).filter_by(owner_id=u.id).count()
+
             contact = {'username': con.contact_username,
                        'id': con.contact_id,
                        'profile_url': con.profile_url,
-                       'spotkey_count': len(spotkeys),
+                       'spotkey_count': spotkey_count,
                        'tether_id': u.tether_id}
             contact_list.append(contact)
         user['contacts'] = contact_list
@@ -330,7 +333,11 @@ def tether():
 
     tether_id = request.form.get('spotkey_id', None)
 
-    db.session.query(User).filter_by(id=user_id).update({'tether_id':tether_id})
+    if not tether_id:
+        return abort(400)
+
+    db.session.query(User).filter_by(id=user_id).update({'tether_id': tether_id})
+    db.session.commit()
 
     return jsonify({'status':'success', 'date':datetime.now()})
 
@@ -341,6 +348,7 @@ def untether():
     user_id = get_id_from_token()
 
     db.session.query(User).filter_by(id=user_id).update({'tether_id': None})
+    db.session.commit()
 
     return jsonify({'status':'success', 'date':datetime.now()})
 
@@ -351,4 +359,3 @@ def not_found(error):
 
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port = port, debug=True)
-
