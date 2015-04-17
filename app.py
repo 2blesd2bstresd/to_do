@@ -36,7 +36,8 @@ def get_spotkeys(user_id=None, spotkey_ids=None):
                                  .filter_by(share_with_all=True) \
                                  .first() for sk_id in spotkey_ids]
 
-    print "SPOCKIS: ", spotkeys
+    print "USER ID: ", user_id
+    print "SPOCKIS: ", spotkeys.all()
 
     sk_list = []
     for sk in spotkeys:
