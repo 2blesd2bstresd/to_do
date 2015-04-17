@@ -35,7 +35,7 @@ def get_spotkeys(user_id=None, spotkey_ids=None):
                                  .filter_by(share_with_all=True) \
                                  .first() for sk_id in spotkey_ids]
 
-    print "IDS:" + user_id
+    print "IDS:", user_id
     print "QUERY: ", spotkeys
     print "SPOCKIS: ", spotkeys.all()
 
