@@ -140,7 +140,7 @@ class Contact(db.Model):
         self.profile_url = profile_url
 
     def __repr__(self):
-        return '<Contact %r>' % contact_username
+        return '<Contact>'
 
 
 class View(db.Model):
