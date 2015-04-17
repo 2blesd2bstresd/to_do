@@ -322,6 +322,9 @@ def all_spotkeys():
 
     user_id = get_id_from_token()
     contacts = Contact.query.filter_by(primary_id=user_id)
+
+    print "CONTACTS: ", contacts.all()
+
     
     contacts = [con.contact_id for con in contacts]
     contacts.append(user_id)
@@ -379,3 +382,4 @@ def not_found(error):
 
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port = port, debug=True)
+
