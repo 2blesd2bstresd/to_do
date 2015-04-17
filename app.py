@@ -141,13 +141,7 @@ def login():
 
         for sk in get_spotkeys(user['id']):
 
-            print "SKID: ", sk['id']
-            print u.tether_id
-
             if str(sk['id']) != str(u.tether_id):
-
-                print "SKIIIIIIIID: ", sk['id']
-
                 spotkey_list.append(sk)
         user['spotkeys'] = spotkey_list
         user['spotkey_count'] = len(spotkey_list)
@@ -276,7 +270,7 @@ def get_user(user_id):
         spotkey_list.append(get_spotkeys(spotkey_ids=[u.tether_id], tether=True))
 
     for sk in get_spotkeys(user_id):
-        if sk['id'] != u.tether_id:
+        if str(sk['id']) != str(u.tether_id):
             spotkey_list.append(sk)
     user['spotkeys'] = spotkey_list
     user['spotkey_count'] = len(spotkey_list)
