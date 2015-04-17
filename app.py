@@ -22,15 +22,15 @@ app = db.app
 bcrypt = Bcrypt(app)
 
 
-def get_spotkeys(user_id=None, spotkey_ids=None):
+def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
     """
     Accepts single user ID or list of spotkey IDs as explicit argument
-    and returns jsonify-able list of spotkeys
+    and returns jsonify-able list of spotkeys.
     """
 
     if user_id:
         spotkeys = Spotkey.query.filter_by(owner_id=user_id) \
-                                .filter_by(share_with_all=True) 
+                                .filter_by(share_with_all=True)
     else:
         spotkeys = [Spotkey.query.filter_by(id=sk_id) \
                                  .filter_by(share_with_all=True) \
@@ -57,6 +57,10 @@ def get_spotkeys(user_id=None, spotkey_ids=None):
                        'requires_navigation': spot.requires_navigation,
                        'details': spot.details
                      }
+
+    # If we're fetching a tether spotkey, no need for an array.
+    if tether:
+        return sk_list.pop()
     return sk_list
 
 
@@ -129,11 +133,17 @@ def login():
             db.session.commit()
 
         # Get users spotkeys
-        spotkeys = []
+        spotkey_list = []
+
+        # Add tethered spotkey in first position.
+        if u.tether_id:
+            spotkey_list.append(get_spotkeys(spotkey_ids=[u.tether_id], tether=True))
+
         for sk in get_spotkeys(user['id']):
-            spotkeys.append(sk)
-        user['spotkeys'] = spotkeys
-        user['spotkey_count'] = len(spotkeys)
+            if sk['id'] != u.tether_id:
+                spotkey_list.append(sk)
+        user['spotkeys'] = spotkey_list
+        user['spotkey_count'] = len(spotkey_list)
 
         # get the users contacts
         contact_list = []
@@ -225,9 +235,14 @@ def create_spotkey():
 
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
+    """
+    If user is in the contact list, returns profile info, 
+    list of owned spotkeys, and tethered spotkey.
+    """
 
     primary_user_id = get_id_from_token()
 
+    # Check if the users are contacts
     contact = Contact.query.filter_by(primary_id=primary_user_id).filter_by(contact_id=user_id).scalar()
 
     if contact:
@@ -248,8 +263,14 @@ def get_user(user_id):
             }
 
     spotkey_list = []
+
+    # Add tethered spotkey in first position.
+    if u.tether_id:
+        spotkey_list.append(get_spotkeys(spotkey_ids=[u.tether_id], tether=True))
+
     for sk in get_spotkeys(user_id):
-        spotkey_list.append(sk)
+        if sk['id'] != u.tether_id:
+            spotkey_list.append(sk)
     user['spotkeys'] = spotkey_list
     user['spotkey_count'] = len(spotkey_list)
 
@@ -358,4 +379,3 @@ def not_found(error):
 
 port = int(os.environ.get('PORT', 5000))
 app.run(host='0.0.0.0', port = port, debug=True)
-
