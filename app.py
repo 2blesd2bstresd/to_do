@@ -323,10 +323,12 @@ def all_spotkeys():
     user_id = get_id_from_token()
     contacts = Contact.query.filter_by(primary_id=user_id)
 
-    print "CONTACTS: ", contacts.all()
-
+    # print "CONTACTS: ", contacts.all()
     
     contacts = [con.contact_id for con in contacts]
+
+    print "CONTACTS: ", contacts
+
     contacts.append(user_id)
     spotkeys = []
     for con_id in contacts:
