@@ -30,7 +30,7 @@ def get_spotkeys(user_id=None, spotkey_ids=None):
 
     if user_id:
         spotkeys = Spotkey.query.filter_by(owner_id=user_id) \
-                                .filter_by(share_with_all=True)
+                                .exclude(share_with_all=False)
     else:
         spotkeys = [Spotkey.query.filter_by(id=sk_id) \
                                  .filter_by(share_with_all=True) \
