@@ -36,6 +36,8 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
                                  .filter_by(share_with_all=True) \
                                  .first() for sk_id in spotkey_ids]
 
+    print "SPOTKEYS: ", spotkeys.all()
+
     sk_list = []
     for sk in spotkeys:
         spotkey = {
@@ -327,15 +329,12 @@ def all_spotkeys():
     
     contacts = [con.contact_id for con in contacts]
 
-    print "CONTACTS: ", contacts
-
     contacts.append(user_id)
     spotkeys = []
     for con_id in contacts:
+        print "ID: ", con_id
         for sk in (get_spotkeys(con_id)):
-            print "SPOTKEY: ", sk
             spotkeys.append(sk)
-    print 'SPOTKEYS: ',  spotkeys
     return jsonify({'spotkeys': spotkeys})
 
 
