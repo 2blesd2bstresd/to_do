@@ -36,8 +36,6 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
                                  .filter_by(share_with_all=True) \
                                  .first() for sk_id in spotkey_ids]
 
-    print "SPOTKEYS: ", spotkeys.all()
-
     sk_list = []
     for sk in spotkeys:
         spotkey = {
@@ -142,7 +140,14 @@ def login():
             spotkey_list.append(get_spotkeys(spotkey_ids=[u.tether_id], tether=True))
 
         for sk in get_spotkeys(user['id']):
-            if sk['id'] != u.tether_id:
+
+            print "SKID: ", sk['id']
+            print u.tether_id
+
+            if str(sk['id']) != str(u.tether_id):
+
+                print "SKIIIIIIIID: ", sk['id']
+
                 spotkey_list.append(sk)
         user['spotkeys'] = spotkey_list
         user['spotkey_count'] = len(spotkey_list)
@@ -324,15 +329,11 @@ def all_spotkeys():
 
     user_id = get_id_from_token()
     contacts = Contact.query.filter_by(primary_id=user_id)
-
-    # print "CONTACTS: ", contacts.all()
     
     contacts = [con.contact_id for con in contacts]
-
     contacts.append(user_id)
     spotkeys = []
     for con_id in contacts:
-        print "ID: ", con_id
         for sk in (get_spotkeys(con_id)):
             spotkeys.append(sk)
     return jsonify({'spotkeys': spotkeys})
