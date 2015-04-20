@@ -36,20 +36,16 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
                                  .filter_by(share_with_all=True) \
                                  .first() for sk_id in spotkey_ids]
 
-    if not spotkeys:
-        return None
-
-    print "SPOCKIS: ", spotkeys
-    
     sk_list = []
     for sk in spotkeys:
-        spotkey = {
-                    'name' : sk.name,
-                    'id' : sk.id,
-                    'owner_id' : sk.owner_id,
-                    'primary_spot_id': sk.primary_spot_id
-                   }
-        sk_list.append(spotkey)
+        if sk:
+            spotkey = {
+                        'name' : sk.name,
+                        'id' : sk.id,
+                        'owner_id' : sk.owner_id,
+                        'primary_spot_id': sk.primary_spot_id
+                       }
+            sk_list.append(spotkey)
 
 
     for sk in sk_list:
