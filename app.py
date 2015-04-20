@@ -36,6 +36,9 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
                                  .filter_by(share_with_all=True) \
                                  .first() for sk_id in spotkey_ids]
 
+    if not spotkeys:
+        return None
+
     sk_list = []
     for sk in spotkeys:
         spotkey = {
