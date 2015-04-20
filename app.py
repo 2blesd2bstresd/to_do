@@ -39,6 +39,8 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
     if not spotkeys:
         return None
 
+    print "SPOCKIS: ", spotkeys
+    
     sk_list = []
     for sk in spotkeys:
         spotkey = {
