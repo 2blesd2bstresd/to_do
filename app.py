@@ -337,8 +337,8 @@ def all_spotkeys():
 @app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])
 def get_spot(spotkey_id, transport_type):
 
-    spots = db.session.query(Spot).filter_by(spotkey_id=spotkey_id) \
-                      .filter(or_(transport_type==transport_type, transport_type=='all')) \
+    spots = db.session.query(Spot).filter(Spot.spotkey_id=spotkey_id) \
+                      .filter(or_(Spot.transport_type==transport_type, Spot.transport_type=='all')) \
                       .order_by(desc(Spot.priority))
     spots_list = [serialize(spot) for spot in spots]
 
