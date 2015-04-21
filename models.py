@@ -74,6 +74,9 @@ class Spotkey(db.Model):
     def __repr__(self):
         return '<Spotkey %r>' % self.name
 
+    def primary_spot(self):
+        return db.session.query(Spot).filter_by(id=self.primary_spot_id).first()
+
 
 class Spot(db.Model):
 
