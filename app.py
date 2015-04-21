@@ -33,12 +33,9 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
                                 .filter_by(share_with_all=True)
 
     else:
-        print "GET SPOTKEYS LIST: ", spotkey_ids
         spotkeys = [Spotkey.query.filter_by(id=sk_id) \
                                  .filter_by(share_with_all=True) \
                                  .first() for sk_id in spotkey_ids]
-
-    print "GET SPOTKEYS LIST 2.0: ", spotkeys
 
     sk_list = []
     for sk in spotkeys:
@@ -48,7 +45,8 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
                         'id' : sk.id,
                         'owner_id' : sk.owner_id,
                         'primary_spot_id': sk.primary_spot_id,
-                        'owner_profile_url': sk.profile_url
+                        'owner_profile_url': sk.profile_url,
+                        'nav_types': sk.nav_types
                        }
             sk_list.append(spotkey)
 

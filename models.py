@@ -60,8 +60,12 @@ class Spotkey(db.Model):
     create_date = db.Column(db.DateTime(), default=db.func.now())
     share_with_all = db.Column(db.Boolean)
     profile_url = db.Column(db.String)
+    nav_types = db.Column(db.String)
 
-    def __init__(self, owner_id, name, create_date=None, location_type=None, share_with_all=False, primary_spot_id=None, profile_url=None):
+    def __init__(self, owner_id, name, create_date=None, 
+                 location_type=None, share_with_all=False, 
+                 primary_spot_id=None, profile_url=None,
+                 nav_types=None):
 
         self.owner_id = owner_id
         self.name = name
@@ -70,6 +74,7 @@ class Spotkey(db.Model):
         self.location_type = location_type
         self.share_with_all = share_with_all
         self.profile_url = profile_url
+        self.nav_types = nav_types
 
     def __repr__(self):
         return '<Spotkey %r>' % self.name
