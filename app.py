@@ -7,7 +7,7 @@ from psycopg2.extras import RealDictCursor
 from flask import Flask, jsonify, abort, request, session, Response, make_response, render_template, redirect
 from functools import wraps
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy import exc, desc, or_
+from sqlalchemy import exc, asc, desc, or_
 from datetime import datetime
 import json
 from database import db
@@ -311,7 +311,7 @@ def spotkey_vewed():
 def recently_viewed():
 
     user_id = get_id_from_token()
-    views = View.query.filter_by(user_id=user_id).order_by(desc('create_date')).limit(3)
+    views = View.query.filter_by(user_id=user_id).order_by(asc('create_date')).limit(3)
 
     spotkey_ids = [view.spotkey_id for view in views]
     spotkeys = get_spotkeys(spotkey_ids=spotkey_ids)
