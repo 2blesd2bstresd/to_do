@@ -158,7 +158,7 @@ class View(db.Model):
         self.spotkey_id = spotkey_id
 
     def __repr__(self):
-        return '<View %r>' % spotkey_id
+        return '<View>'
 
 class Session(db.Model):
 
