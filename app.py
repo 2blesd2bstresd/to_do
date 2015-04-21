@@ -316,7 +316,7 @@ def spotkey_vewed():
 def recently_viewed():
 
     user_id = get_id_from_token()
-    views = View.query.filter_by(user_id=user_id).order_by(desc('create_date')).limit(5)
+    views = View.query.filter_by(user_id=user_id).order_by(desc('create_date')).limit(10)
 
     spotkey_ids = set([view.spotkey_id for view in views])
 
