@@ -315,7 +315,7 @@ def recently_viewed():
     user_id = get_id_from_token()
     views = View.query.filter_by(user_id=user_id).order_by(asc('create_date')).limit(10)
 
-    print "SPOCKI IDS: ", spotkey_ids
+    print "SPOCKI IDS: ", [view.spotkey_id for view in views]
 
     spotkey_ids = set([view.spotkey_id for view in views])
 
