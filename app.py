@@ -32,7 +32,11 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
         spotkeys = [sk for sk in Spotkey.query.filter_by(owner_id=user_id) \
                                 .filter_by(share_with_all=True).all()]
 
+        print "SPOCKIES: ", spotkeys
+
         spotkeys = [spotkeys.append(sk) for sk in Spotkey.query.filter_by(location_type='business').all()]
+
+        print "SPOCKIES 2: ", spotkeys
 
     else:
         spotkeys = [Spotkey.query.filter_by(id=sk_id) \
