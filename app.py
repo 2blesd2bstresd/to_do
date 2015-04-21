@@ -30,7 +30,8 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
 
     if user_id:
         spotkeys = Spotkey.query.filter_by(owner_id=user_id) \
-                                .filter_by(share_with_all=True)
+                                .filter_by(share_with_all=True).all()
+        spotkeys.append(Spotkey.query.filter_by(location_type='business').all())
 
     else:
         spotkeys = [Spotkey.query.filter_by(id=sk_id) \
@@ -313,9 +314,6 @@ def recently_viewed():
 
     user_id = get_id_from_token()
     views = View.query.filter_by(user_id=user_id).order_by(asc('create_date')).limit(3)
-
-    for view in views.all():
-        print "VIEW: ", view
 
     spotkey_ids = [view.spotkey_id for view in views]
     spotkeys = get_spotkeys(spotkey_ids=spotkey_ids)
