@@ -15,9 +15,12 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     email = db.Column(db.String)
     tether_id = db.Column(db.String)
+    user_type = db.Column(db.String)
     create_date = db.Column(db.DateTime(), default=db.func.now())
 
-    def __init__(self, username, password, first_name=None, last_name=None, email=None, profile_url=None, create_date=None, tether_id=None):
+    def __init__(self, username, password, first_name=None, 
+                 last_name=None, email=None, profile_url=None, 
+                 create_date=None, tether_id=None, user_type='personal'):
 
         self.username = username
         self.password = password
@@ -27,6 +30,7 @@ class User(db.Model):
         self.profile_url = profile_url
         self.create_date = create_date
         self.tether_id = tether_id
+        self.user_type = user_type
 
     def is_authenticated(self):
         return True
