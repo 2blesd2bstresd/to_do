@@ -332,10 +332,10 @@ def all_spotkeys():
     contacts.append(user_id)
     spotkeys = []
 
-    public = Spotkey.query.filter_by(location_type='business', tether=True)
+    # public = Spotkey.query.filter_by(location_type='business', tether=True)
 
-    for sk in public:
-        spotkeys.append(get_spotkeys(spotkey_ids=sk.id))
+    # for sk in public:
+    #     spotkeys.append(get_spotkeys(spotkey_ids=sk.id))
 
     for con_id in contacts:
         for sk in (get_spotkeys(con_id)):
