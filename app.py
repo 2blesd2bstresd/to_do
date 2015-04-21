@@ -33,9 +33,12 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
                                 .filter_by(share_with_all=True)
 
     else:
+        print "GET SPOTKEYS LIST: ", spotkey_ids
         spotkeys = [Spotkey.query.filter_by(id=sk_id) \
                                  .filter_by(share_with_all=True) \
                                  .first() for sk_id in spotkey_ids]
+
+    print "GET SPOTKEYS LIST 2.0: ", spotkeys
 
     sk_list = []
     for sk in spotkeys:
@@ -319,8 +322,9 @@ def recently_viewed():
 
     spotkey_ids = set([view.spotkey_id for view in views])
 
-    spotkeys = get_spotkeys(spotkey_ids=spotkey_ids)
+    print "SPOTKEY IDS 2.0: ", spotkey_ids
 
+    spotkeys = get_spotkeys(spotkey_ids=spotkey_ids)
     return jsonify({'spotkeys': spotkeys})
 
 
