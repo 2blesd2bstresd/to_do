@@ -328,10 +328,15 @@ def all_spotkeys():
 
     user_id = get_id_from_token()
     contacts = Contact.query.filter_by(primary_id=user_id)
-    
     contacts = [con.contact_id for con in contacts]
     contacts.append(user_id)
     spotkeys = []
+
+    public = Spotkey.query.filter_by(location_type='business', tether=True)
+
+    for sk in public:
+        spotkeys.append(get_spotkeys(spotkey_ids=sk.id))
+
     for con_id in contacts:
         for sk in (get_spotkeys(con_id)):
             spotkeys.append(sk)
