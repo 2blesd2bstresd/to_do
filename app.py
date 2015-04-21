@@ -313,7 +313,8 @@ def recently_viewed():
     user_id = get_id_from_token()
     views = View.query.filter_by(user_id=user_id).order_by(asc('create_date')).limit(3)
 
-    print "VIEWS: ", views.all()
+    for view in views.all():
+        print "VIEW: ", view
 
     spotkey_ids = [view.spotkey_id for view in views]
     spotkeys = get_spotkeys(spotkey_ids=spotkey_ids)
