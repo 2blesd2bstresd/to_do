@@ -29,9 +29,10 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
     """
 
     if user_id:
-        spotkeys = Spotkey.query.filter_by(owner_id=user_id) \
-                                .filter_by(share_with_all=True).all()
-        spotkeys.append(Spotkey.query.filter_by(location_type='business').all())
+        spotkeys = [sk for sk in Spotkey.query.filter_by(owner_id=user_id) \
+                                .filter_by(share_with_all=True).all()]
+
+        spotkeys = [spotkeys.append(sk) for sk in Spotkey.query.filter_by(location_type='business').all()]
 
     else:
         spotkeys = [Spotkey.query.filter_by(id=sk_id) \
