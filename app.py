@@ -313,11 +313,11 @@ def spotkey_vewed():
 def recently_viewed():
 
     user_id = get_id_from_token()
-    views = View.query.filter_by(user_id=user_id).order_by(asc('create_date')).limit(3)
-
-    print "DESC: ", View.query.filter_by(user_id=user_id).order_by(desc('create_date')).limit(5).all()
+    views = View.query.filter_by(user_id=user_id).order_by(asc('create_date')).limit(10)
 
     spotkey_ids = [view.spotkey_id for view in views]
+
+    print 'SPOCKI IDS: ', spotkey_ids
     spotkeys = get_spotkeys(spotkey_ids=spotkey_ids)
 
     return jsonify({'spotkeys': spotkeys})
