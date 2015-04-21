@@ -44,7 +44,8 @@ def get_spotkeys(user_id=None, spotkey_ids=None, tether=False):
                         'name' : sk.name,
                         'id' : sk.id,
                         'owner_id' : sk.owner_id,
-                        'primary_spot_id': sk.primary_spot_id
+                        'primary_spot_id': sk.primary_spot_id,
+                        'owner_profile_url': sk.profile_url
                        }
             sk_list.append(spotkey)
 
