@@ -351,14 +351,23 @@ def all_spotkeys():
 @app.route('/spotkey/<int:spotkey_id>/spots/<string:transport_type>', methods=['GET'])
 def get_spot(spotkey_id, transport_type):
 
-    spots = db.session.query(Spot).filter_by(spotkey_id=spotkey_id) \
-                      .filter(or_(Spot.transport_type==transport_type, Spot.transport_type=='all')) \
-                      .order_by(desc(Spot.priority))
-    spots_list = [serialize(spot) for spot in spots]
+    spots_list = []
 
-    if not spots:
-        return jsonify({'error': 'No Spots.',
-                 'error_code': 1})
+    spotkey = Spotkey.query.filter_by(id=spotkey_id).scalar()
+    if not spotkey:
+        return abort(404)
+
+    while spotkey:
+        spots = db.session.query(Spot).filter_by(spotkey_id=spotkey.id) \
+                          .filter(or_(Spot.transport_type==transport_type, Spot.transport_type=='all')) \
+                          .order_by(asc(Spot.priority))
+
+        for spot in spots:
+            spots_list.insert(0, serialize(spot))
+
+        spotkey = Spotkey.query.filter_by(id=spotkey.previous_id).scalar()
+        # spots_list = [serialize(spot) for spot in spots]
+
     return jsonify({'spots': spots_list})
 
 
