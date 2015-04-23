@@ -2,9 +2,9 @@
 import os
 # grabs the folder where the script runs
 basedir = os.path.abspath(os.path.dirname(__file__))
-DATABASE = 'd7p0rp7lvl3e7b' 
-USERNAME = 'ngdndiaovlpgps' 
-PASSWORD = 'yBzzZ1UBU7c2phcIMBfB4HHA5u' 
+DATABASE = 'deoavno39l5b77' 
+USERNAME = 'ybkatgvscdceyo' 
+PASSWORD = 'EpI-LS7-ceaExRerbNtpeLc-UY' 
 CSRF_ENABLED = True 
 SECRET_KEY = 'my_precious'
 
