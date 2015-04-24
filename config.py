@@ -17,7 +17,7 @@ BUCKET = 'spotkey-host'
 DATABASE_PATH = os.path.join(basedir, DATABASE)
 
 # DB URL
-URL = '//ngdndiaovlpgps:yBzzZ1UBU7c2phcIMBfB4HHA5u@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b'
+URL = '//ybkatgvscdceyo:EpI-LS7-ceaExRerbNtpeLc-UY@ec2-54-163-238-96.compute-1.amazonaws.com:5432/deoavno39l5b77'
 
 # database URI
-SQLALCHEMY_DATABASE_URI = 'postgres://ngdndiaovlpgps:yBzzZ1UBU7c2phcIMBfB4HHA5u@ec2-23-21-183-70.compute-1.amazonaws.com:5432/d7p0rp7lvl3e7b'
+SQLALCHEMY_DATABASE_URI = 'postgres://ybkatgvscdceyo:EpI-LS7-ceaExRerbNtpeLc-UY@ec2-54-163-238-96.compute-1.amazonaws.com:5432/deoavno39l5b77'
