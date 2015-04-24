@@ -61,14 +61,12 @@ class Spotkey(db.Model):
     share_with_all = db.Column(db.Boolean)
     profile_url = db.Column(db.String)
     nav_types = db.Column(db.String)
-    next_id = db.Column(db.String)
-    previous_id = db.Column(db.String)
+    chain_id = db.Column(db.String)
 
     def __init__(self, owner_id, name, create_date=None, 
                  location_type=None, share_with_all=False, 
                  primary_spot_id=None, profile_url=None,
-                 nav_types=None, next_id=None, 
-                 previous_id=None):
+                 nav_types=None, chain_id=None):
 
         self.owner_id = owner_id
         self.name = name
@@ -78,8 +76,7 @@ class Spotkey(db.Model):
         self.share_with_all = share_with_all
         self.profile_url = profile_url
         self.nav_types = nav_types
-        self.next_id = next_id
-        self.previous_id = previous_id
+        self.chain_id = chain_id
 
     def __repr__(self):
         return '<Spotkey %r>' % self.name

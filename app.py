@@ -365,7 +365,7 @@ def get_spot(spotkey_id, transport_type):
         for spot in spots:
             spots_list.insert(0, serialize(spot))
 
-        spotkey = Spotkey.query.filter_by(id=spotkey.previous_id).scalar()
+        spotkey = Spotkey.query.filter_by(id=spotkey.chain_id).scalar()
         # spots_list = [serialize(spot) for spot in spots]
 
     return jsonify({'spots': spots_list})
