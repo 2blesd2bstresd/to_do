@@ -360,6 +360,8 @@ def get_spot(spotkey_id, transport_type):
 
     while spotkey and spotkey.id:
 
+        print 'SPOTKEY!: ', spotkey.id
+
         spots = db.session.query(Spot).filter_by(spotkey_id=spotkey.id) \
                           .filter(or_(Spot.transport_type==transport_type, Spot.transport_type=='all')) \
                           .order_by(asc(Spot.priority))
