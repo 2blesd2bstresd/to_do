@@ -205,7 +205,7 @@ def create_spotkey():
     city = form.get('city', None)
     state = form.get('state', None)
     zipcode = form.get('zipcode', None)
-    transport_type = form.get('transport_type', None)
+    transport_type = form.get('transport_type', 'all')
     buzzer_code = form.get('buzzer_code')
     requires_navigation = form.get('requires_navigation', None)
     latitude = form.get('latitude', None)
@@ -358,7 +358,8 @@ def get_spot(spotkey_id, transport_type):
     if not spotkey:
         return abort(404)
 
-    while spotkey:
+    while spotkey and spotkey.id:
+
         spots = db.session.query(Spot).filter_by(spotkey_id=spotkey.id) \
                           .filter(or_(Spot.transport_type==transport_type, Spot.transport_type=='all')) \
                           .order_by(asc(Spot.priority))
