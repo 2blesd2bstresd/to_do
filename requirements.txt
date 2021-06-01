@@ -24,7 +24,7 @@ requests-oauthlib==0.4.2
 rsa==3.1.4
 six==1.9.0
 SQLAlchemy==0.9.9
-urllib3==1.10.2
+urllib3==1.26.5
 Werkzeug==0.10.1
 WTForms==2.0.2
 Flask-Bcrypt==0.6.2
